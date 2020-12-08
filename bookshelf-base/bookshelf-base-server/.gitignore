@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 userdata/
 bookshelfdb/
+derby.log
 
 ### STS ###
 .apt_generated
