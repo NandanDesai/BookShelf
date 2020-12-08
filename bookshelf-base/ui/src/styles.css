@@ -1,0 +1,7 @@
+@import "~angular-notifier/styles/core.css";
+@import "~angular-notifier/styles/themes/theme-material.css";
+@import "~angular-notifier/styles/types/type-success.css";
+@import "~angular-notifier/styles/types/type-error.css";
+@import "~angular-notifier/styles/types/type-info.css";
+@import '~material-design-icons/iconfont/material-icons.css';
+@import '~typeface-roboto/index.css';

@@ -1,0 +1,39 @@
+:host {
+  display: flex;
+  justify-content: center;
+  margin: 100px 0px;
+}
+
+.center {
+  text-align: center
+}
+
+
+.container {
+  position: relative;
+  text-align: center;
+}
+
+.avatar {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  -webkit-filter: blur(2px); /* Safari 6.0 - 9.0 */
+  filter: blur(2px);
+  cursor: pointer;
+  _cursor: hand;
+}
+
+.centered-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  cursor: pointer;
+  _cursor: hand;
+}
+
+::ng-deep .mat-tooltip {
+  white-space: pre-line;
+}

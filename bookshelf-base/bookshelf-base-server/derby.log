@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Tue Dec 08 18:08:45 IST 2020:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0176-425c-73ad-0000056783f0 
+on database directory /home/nandan/Desktop/projects/BookShelf/bookshelf-base/bookshelf-base-server/bookshelfdb with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@512ddf17 
+Loaded from file:/home/nandan/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.14.2.0/7efad40ef52fbb1f08142f07a83b42d29e47d8ce/derby-10.14.2.0.jar
+java.vendor=JetBrains s.r.o
+java.runtime.version=11.0.3+12-b304.39
+user.dir=/home/nandan/Desktop/projects/BookShelf/bookshelf-base/bookshelf-base-server
+os.name=Linux
+os.arch=amd64
+os.version=4.19.0-5-amd64
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

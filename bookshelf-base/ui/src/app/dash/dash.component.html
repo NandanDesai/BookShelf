@@ -1,0 +1,52 @@
+<br><br><br>
+<div>
+  <mat-card [class.mat-elevation-z8]="true" class="search-card">
+    <div class="center">
+      <mat-card-content>
+        <form [formGroup]="form" class="search-form" (ngSubmit)="searchSubmit()">
+          <mat-form-field class="search-full-width">
+            <mat-label>Search your book</mat-label>
+            <input matInput autocomplete="off" formControlName="search">
+          </mat-form-field>
+          <br>
+          <!-- [hidden]="searchSubmitted" -->
+          <span [hidden]="!searchSubmitted"><button type="button" mat-raised-button
+                                                    (click)="clearClicked()">Clear</button>&nbsp;&nbsp;</span>
+          <button type="submit" mat-raised-button>Search</button>
+        </form>
+      </mat-card-content>
+    </div>
+  </mat-card>
+  <br>
+  <mat-card [class.mat-elevation-z8]="true">
+    <div style="text-align: center" [hidden]="!searchSubmitted">
+      <h2>Search Results for "{{searchKeyword}}"</h2>
+    </div>
+    <div style="text-align: center" *ngIf="books.length==0 && !isLoadingService.isLoading()">
+      <h4>No books found.</h4>
+    </div>
+    <!--  -->
+    <div *ngIf="isLoadingService.isLoading()">
+      <br><br>
+      <br><br>
+      <br><br>
+      <br><br>
+      <mat-spinner [diameter]="50"></mat-spinner>
+      <br><br>
+      <br><br>
+      <br><br>
+      <br><br><br><br>
+    </div>
+    <mat-grid-list cols="3" rowHeight="1:1">
+      <mat-grid-tile *ngFor="let book of books">
+        <a routerLink="/pdf" [state]="{ data: book}" matBadge="{{book.role}}" class="stretch-badge"
+           matBadgeColor="{{book.role!='Free'?'accent':'primary'}}">
+          <img class="image-tile"
+               [src]="globalVars.getApiUrl()+'/books/cover/'+book.id | authimage | async"
+               alt="Cover photo for {{book.title}}">
+        </a>
+      </mat-grid-tile>
+    </mat-grid-list>
+
+  </mat-card>
+</div>

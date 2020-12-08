@@ -1,0 +1,46 @@
+<mat-toolbar class="fixed-header" color="primary">
+  <span><a routerLink="/" style="text-decoration: none; color: white;">BookShelf Base</a></span>
+  <span class="custom-spacer"></span>
+  <div [hidden]="!showMenu">
+    <button mat-stroked-button
+            matTooltip="You currently own {{role=='Admin'? 'an':'a'}} {{role}} account">{{role}}</button>
+    &nbsp;&nbsp;
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="avatar">
+      <img class="avatar"
+           [src]="userPhotoUrl | authimage | async">
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button (click)="showProfile()" mat-menu-item>
+        <mat-icon>perm_identity</mat-icon>
+        <span>My Profile</span>
+      </button>
+
+      <button *ngIf="role=='Admin'" (click)="showAdminDash()" mat-menu-item>
+        <mat-icon>priority_high</mat-icon>
+        <span>Admin Dashboard</span>
+      </button>
+
+      <button (click)="about()" mat-menu-item>
+        <mat-icon>help_outline</mat-icon>
+        <span>About</span>
+      </button>
+
+      <button (click)="logout()" mat-menu-item>
+        <mat-icon>last_page</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </div>
+</mat-toolbar>
+<!-- isLoading | async -->
+<mat-progress-bar *ngIf="isLoading | async" mode="indeterminate" color="warn"
+                  class="fixed-header">
+</mat-progress-bar>
+<br>
+<div [@triggerName]="prepareRoute(outlet)">
+  <router-outlet #outlet="outlet" (activate)="onRouterOutletActivate($event)"></router-outlet>
+</div>
+<notifier-container></notifier-container>
+
+

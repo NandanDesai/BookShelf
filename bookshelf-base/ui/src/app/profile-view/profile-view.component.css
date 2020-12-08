@@ -1,0 +1,22 @@
+:host {
+  display: flex;
+  justify-content: center;
+  margin: 100px 0px;
+}
+
+.center {
+  text-align: center
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.badge {
+  position: absolute;
+  top: -20px;
+  right: -30px;
+  padding: 5px 10px;
+}

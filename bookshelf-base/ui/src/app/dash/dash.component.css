@@ -1,0 +1,49 @@
+mat-grid-tile {
+  background: white;
+}
+
+.image-tile {
+  height: 350px;
+  width: 230px;
+}
+
+.image-tile:hover {
+  box-shadow: 0 0 10px 5px rgba(0, 140, 186, 0.5);
+}
+
+.dashboard-logo {
+  margin-left: 5px;
+  max-width: 100%;
+  height: auto;
+}
+
+.stretch-badge > .mat-badge-content {
+  width: 80px;
+  border-radius: 20px;
+  right: unset !important;
+}
+
+.search-card {
+  text-align: center;
+}
+
+.search-form {
+  width: 500px;
+}
+
+.search-full-width {
+  width: 100%;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mat-spinner {
+  position: relative;
+  margin-left: 48%;
+  margin-right: 50%;
+}
+

@@ -1,0 +1,31 @@
+
+table {
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+tr.book-detail-row {
+  height: 0;
+}
+
+tr.book-row:not(.book-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.book-row:not(.book-expanded-row):active {
+  background: #efefef;
+}
+
+.book-row td {
+  border-bottom-width: 0;
+}
+
+.book-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.book-description {
+  padding: 16px;
+}

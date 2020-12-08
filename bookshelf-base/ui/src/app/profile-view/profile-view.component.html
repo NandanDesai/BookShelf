@@ -1,0 +1,41 @@
+<br><br>
+
+<mat-card style="position: relative;">
+    <span class="badge">
+        <button mat-mini-fab (click)="editButtonCLicked()" color="accent" matTooltip="Edit your profile"
+                matTooltipPosition="right" aria-label="Edit button">
+            <mat-icon>edit</mat-icon>
+        </button>
+    </span>
+  <br>
+  <div class="center">
+    <mat-card-title>{{user.fullName}}</mat-card-title>
+    <br>
+    <img class="avatar center" [src]="userPhotoUrl | authimage | async">
+    <div style="text-align: start">
+      <mat-list>
+
+        <div mat-subheader>Profile Information</div>
+
+        <mat-list-item>
+          <mat-icon mat-list-icon>email</mat-icon>
+          <div mat-line>Email</div>
+          <div mat-line> {{user.email}} </div>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon mat-list-icon>person_outline</mat-icon>
+          <div mat-line>Role</div>
+          <div mat-line> {{user.role}} </div>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon mat-list-icon>access_time</mat-icon>
+          <div mat-line>Last Seen</div>
+          <div mat-line> {{user.lastSeen}} </div>
+        </mat-list-item>
+      </mat-list>
+    </div>
+  </div>
+  <mat-card-content>
+
+  </mat-card-content>
+</mat-card>
