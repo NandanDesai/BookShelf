@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {GlobalVars} from './global.vars';
 import {NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterOutlet} from '@angular/router';
 import {IsLoadingService} from '@service-work/is-loading';
@@ -11,6 +10,7 @@ import {TokenStorageService} from './_misc/tokenstore.service';
 import {TokenPayload} from './_models/token-payload';
 import {NotifierService} from 'angular-notifier';
 import {ProfilePicChangeListener} from './_misc/profilepic-change-listener.service';
+import {environment} from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -86,9 +86,9 @@ export class AppComponent implements OnInit {
         this.isLoadingService.remove();
       });
 
-    // this is to load pdf.worker.min.js from assets folder instead of CDN
+    // this is to load pdf.worker.js from assets folder instead of CDN
     // I've set this according to what was given in the README page of the repository
-    (window as any).pdfWorkerSrc = '/assets/pdf.worker.min.js';
+    (window as any).pdfWorkerSrc = '/assets/pdf.worker.es5.v2.5.207.js';
   }
 
   public onRouterOutletActivate(event): void {
@@ -153,6 +153,8 @@ export class AppComponent implements OnInit {
   templateUrl: 'about-dialog.html',
 })
 export class AboutDialog {
+  angularAppVersion = environment.version;
+  serverVersion = environment.serverVersion;
   constructor(
     public dialogRef: MatDialogRef<AboutDialog>) {
   }

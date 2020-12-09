@@ -228,7 +228,7 @@ export class EditUserDialog {
     const modifiedUser: User = {
       fullName: this.user.fullName,
       email: this.user.email,
-      lastSeen: this.user.lastSeen,
+      lastLogin: this.user.lastLogin,
       role: newRole,
       id: this.user.id
     };
