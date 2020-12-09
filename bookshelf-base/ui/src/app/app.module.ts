@@ -152,7 +152,7 @@ const customNotifierOptions: NotifierOptions = {
         path: '**',
         redirectTo: ''
       },
-    ]),
+    ], { useHash: true }),
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
