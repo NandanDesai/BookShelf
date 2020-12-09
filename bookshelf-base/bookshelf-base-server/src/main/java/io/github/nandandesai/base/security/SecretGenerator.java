@@ -32,14 +32,14 @@ class SecretGenerator {
 
     String getServerSecret() {
         try {
-            String secret = new String(FileOperation.readFile(userDataPaths.getUserDataRootPath(), SERVER_SECRET_FILENAME), Charset.defaultCharset());
+            String secret = new String(FileOperation.readFile(userDataPaths.getCurrentJarPath(), SERVER_SECRET_FILENAME), Charset.defaultCharset());
             logger.info("Server secret successfully read from the filesystem. Using the same for this runtime.");
             return secret;
         }catch (IOException e){
             logger.info(SERVER_SECRET_FILENAME+" file doesn't exists or something went wrong in reading that file. Generating a new secret for the server.");
             String newSecret = generateRandomString(32);
             try {
-                FileOperation.writeFile(userDataPaths.getUserDataRootPath(), SERVER_SECRET_FILENAME, newSecret.getBytes());
+                FileOperation.writeFile(userDataPaths.getCurrentJarPath(), SERVER_SECRET_FILENAME, newSecret.getBytes());
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

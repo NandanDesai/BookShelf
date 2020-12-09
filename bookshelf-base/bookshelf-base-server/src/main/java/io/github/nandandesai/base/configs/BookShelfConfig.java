@@ -175,6 +175,6 @@ public class BookShelfConfig {
                 .setUserPhotoDirPath(userPhotoDir)
                 .setBookCoversPath(bookCoversDir)
                 .setBookPdfsPath(bookPdfsDir)
-                .setUserDataRootPath(userDataRootPath + File.separator);
+                .setCurrentJarPath(currentDirectory + File.separator);
     }
 }

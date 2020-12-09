@@ -7,6 +7,7 @@ build/
 userdata/
 bookshelfdb/
 derby.log
+server_secret.txt
 
 ### STS ###
 .apt_generated

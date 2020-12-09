@@ -13,5 +13,5 @@ public class UserDataPaths {
     private String userPhotoDirPath;
     private String bookCoversPath;
     private String bookPdfsPath;
-    private String userDataRootPath;
+    private String currentJarPath;
 }
