@@ -20,7 +20,7 @@ public class UserDto {
     private Integer id;
     private String email;
     private String fullName;
-    private LocalDateTime lastSeen;
+    private LocalDateTime lastLogin;
     private String role;
 
     public static UserDto getUserDtoFromUser(User user) {
@@ -28,7 +28,7 @@ public class UserDto {
                 .setId(user.getId())
                 .setEmail(user.getEmail())
                 .setFullName(user.getFullName())
-                .setLastSeen(user.getLastSeen())
+                .setLastLogin(user.getLastLogin())
                 .setRole(user.getRole().getName());
     }
 

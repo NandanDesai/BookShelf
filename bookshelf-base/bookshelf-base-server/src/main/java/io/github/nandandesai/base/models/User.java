@@ -34,7 +34,7 @@ public class User {
     private String profilePicName;
 
     @Column
-    private LocalDateTime lastSeen;
+    private LocalDateTime lastLogin;
 
     @ManyToOne
     private Role role;

@@ -129,7 +129,7 @@ public class BookShelfConfig {
                 User freeUser = new User();
                 freeUser.setProfilePicName("default-avatar.png")
                         .setRole(FreeRole)
-                        .setLastSeen(LocalDateTime.now())
+                        .setLastLogin(LocalDateTime.now())
                         .setFullName("User")
                         .setEmail("user")
                         .setPassword(passwordEncoder.encode("user"));
@@ -138,7 +138,7 @@ public class BookShelfConfig {
                 User admin = new User();
                 admin.setProfilePicName("default-avatar.png")
                         .setRole(adminRole)
-                        .setLastSeen(LocalDateTime.now())
+                        .setLastLogin(LocalDateTime.now())
                         .setFullName("Admin")
                         .setEmail("admin")
                         .setPassword(passwordEncoder.encode("admin"));

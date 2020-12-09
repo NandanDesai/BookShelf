@@ -86,7 +86,7 @@ public class UserService {
         user.setEmail(userSignUpRequest.getEmail())
                 .setPassword(passwordEncoder.encode(userSignUpRequest.getPassword()))
                 .setFullName(userSignUpRequest.getFullName())
-                .setLastSeen(LocalDateTime.now())
+                .setLastLogin(LocalDateTime.now())
                 .setProfilePicName("default-avatar.png");
         Optional<Role> optionalRole = roleRepository.findById("Free");
         if(!optionalRole.isPresent()){
@@ -125,7 +125,7 @@ public class UserService {
 
         //update last seen
         User user = userRepository.findByEmail(userLoginRequest.getEmail()).get();
-        user.setLastSeen(LocalDateTime.now());
+        user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
 
         //create and return the token
