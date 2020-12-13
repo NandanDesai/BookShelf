@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Edit User</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <b>Name: &nbsp;&nbsp;</b> {{user.fullName}}
+    <br><br>
+    <mat-form-field appearance="fill">
+      <mat-label>Role</mat-label>
+      <mat-select formControlName="role" [value]="user.role">
+        <mat-option *ngFor="let r of roleList" [value]="r">{{r}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button mat-dialog-close (click)="onOkayClick()" cdkFocusInitial>Okay</button>
+</div>

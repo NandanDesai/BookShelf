@@ -1,0 +1,77 @@
+<h1 mat-dialog-title>Add a new book</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <p>
+      <mat-form-field style="width: 100%">
+        <input type="text" matInput placeholder="Title" formControlName="title" autocomplete="off">
+      </mat-form-field>
+      <mat-error
+        *ngIf="submitted && form.controls['title'].invalid && (form.controls['title'].dirty || form.controls['title'].touched)">
+        <div *ngIf="form.controls['title'].errors.required">* Title is required</div>
+      </mat-error>
+    </p>
+
+    <p>
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="desc" autocomplete="off" multiline="true" rows="5"></textarea>
+      </mat-form-field>
+      <mat-error
+        *ngIf="submitted && form.controls['desc'].invalid && (form.controls['desc'].dirty || form.controls['desc'].touched)">
+        * Description is required
+      </mat-error>
+    </p>
+
+    <p>
+      <mat-form-field appearance="fill" style="width: 100%">
+        <mat-label>Role</mat-label>
+        <mat-select formControlName="role">
+          <mat-option *ngFor="let r of roleList" [value]="r">{{r}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-error
+        *ngIf="submitted && form.controls['role'].invalid && (form.controls['role'].dirty || form.controls['role'].touched)">
+        * Role is required
+      </mat-error>
+    </p>
+
+    <div>
+      <button (click)="bookCoverInput.click()" mat-raised-button>
+        <mat-icon>add</mat-icon>
+        <span>Select Book Cover</span>
+        <input #bookCoverInput type="file" (change)="onCoverPhotoSelect($event.target.files)" style="display:none;"
+               accept="image/jpeg,image/jpg,image/png"/>
+      </button>
+      <p *ngIf="coverPhotoToUpload != null" style="padding: 5px">
+        <b>{{coverPhotoToUpload.name}}</b> selected.
+      </p>
+
+      <mat-error
+        *ngIf="submitted && (coverPhotoToUpload == null)">
+        <br>
+        * Cover photo is required
+      </mat-error>
+    </div>
+    <br>
+    <div>
+      <button (click)="bookPdfInput.click()" mat-raised-button>
+        <mat-icon>add</mat-icon>
+        <span>Select Book PDF</span>
+        <input #bookPdfInput type="file"
+               (change)="onBookPdfSelect($event.target.files)" style="display:none;" accept="application/pdf"/>
+      </button>
+      <p *ngIf="bookPdfToUpload != null" style="padding: 5px">
+        <b>{{bookPdfToUpload.name}}</b> selected.
+      </p>
+      <mat-error *ngIf="submitted && (bookPdfToUpload == null)">
+        <br>
+        * Book PDF is required
+      </mat-error>
+    </div>
+    <br>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button (click)="onOkayClick()" cdkFocusInitial>Okay</button>
+</div>

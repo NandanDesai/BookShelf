@@ -1,0 +1,49 @@
+<mat-sidenav-container autosize>
+  <mat-sidenav [fixedInViewport]="true" mode="side" [opened]="openSidenav" style="width: 300px;">
+    <br>
+    <br>
+    <br>
+    <br>
+    <div style="padding: 5px;">
+      <h4 style="text-align: center"><b>{{book.title}}</b></h4>
+      <p>{{book.desc}}</p>
+      <mat-divider></mat-divider>
+      <br>
+
+      <div style="text-align: center" [hidden]="!allowed">
+        Page {{pageNumber}} of {{totalPages}}<br><br>
+        <button mat-fab color="accent" (click)="previousPage()" aria-label="previous">
+          <mat-icon>skip_previous</mat-icon>
+        </button> &nbsp;&nbsp;
+        <button mat-fab color="accent" (click)="nextPage()" aria-label="next">
+          <mat-icon>skip_next</mat-icon>
+        </button>
+      </div>
+      <div style="text-align: center" [hidden]="allowed">
+        <p>This book is locked.</p>
+      </div>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div>
+      <br><br>
+      <div id="book-display">
+        <pdf-viewer [show-borders]="true" [src]="pdfSrc" [render-text]="true" style="display: block;"
+                    [show-all]="false"
+                    [page]="pageNumber"
+                    (after-load-complete)="pdfLoadComplete($event)"
+                    (error)="onError($event)">
+        </pdf-viewer>
+      </div>
+      <div class="img-text-container" id="not-allowed-display">
+        <img class="image-tile"
+             [src]="globalVars.getApiUrl()+'/books/cover/'+book.id | authimage | async">
+      </div>
+      <div class="centered-text" [hidden]="allowed">
+        <mat-icon [inline]="true">lock</mat-icon>
+      </div>
+    </div>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

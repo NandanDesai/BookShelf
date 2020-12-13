@@ -1,0 +1,78 @@
+<br><br>
+
+<mat-card>
+  <br>
+  <div class="center" style="width: 300px">
+    <h2>Edit your profile!</h2>
+    <p><b>Change the profile picture</b></p>
+    <div class="container">
+      <label>
+        <img class="avatar" [src]="userPhotoUrl | authimage | async">
+        <div class="centered-text">
+          <mat-icon [inline]="true">camera_enhance</mat-icon>
+        </div>
+        <input type="file" name="profilePhoto" style="display:none" (change)="handleFiles($event.target.files)"
+               accept="image/*">
+      </label>
+
+      <!-- <div *ngIf="fileToUpload != null">
+          <b>{{fileToUpload.name}}</b> selected.
+      </div>
+      <br><br> -->
+      <!-- <button mat-raised-button (click)="uploadFile()" color="accent">
+          Upload
+      </button> -->
+    </div>
+    <br><br>
+    <p><b>Change the password</b></p>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <p>
+        <mat-form-field style="width: 90%;">
+          <input type="password" matInput placeholder="Current Password" formControlName="curPassword"
+                 autocomplete="off">
+        </mat-form-field>
+        <mat-error
+          *ngIf="submitted && form.controls['curPassword'].invalid && (form.controls['curPassword'].dirty || form.controls['curPassword'].touched)">
+          * Current password is required
+        </mat-error>
+      </p>
+
+      <p> <span>
+                        <mat-icon style="cursor: pointer;" [matTooltip]="tooltipText" matTooltipPosition="left"
+                                  matTooltipClass="password-tooltip">info</mat-icon> &nbsp;&nbsp;
+                        <mat-form-field style="width: 80%">
+                            <input type="password" matInput placeholder="Password" formControlName="password"
+                                   autocomplete="off">
+                        </mat-form-field>
+                    </span>
+        <mat-error
+          *ngIf="submitted && form.controls['password'].invalid && (form.controls['password'].dirty || form.controls['password'].touched)">
+          <div *ngIf="form.controls['password'].errors.required">* Password is required</div>
+          <div *ngIf="form.controls['password'].errors.invalidPass">* Password is invalid</div>
+        </mat-error>
+      </p>
+
+      <p>
+        <mat-form-field style="width: 90%;">
+          <input type="password" matInput placeholder="Confirm Password" formControlName="confirmPassword"
+                 autocomplete="off">
+        </mat-form-field>
+        <mat-error
+          *ngIf="submitted && form.controls['confirmPassword'].invalid && (form.controls['confirmPassword'].dirty || form.controls['confirmPassword'].touched)">
+          <div *ngIf="form.controls['confirmPassword'].errors.required">* Confirming the password is required</div>
+          <div *ngIf="form.controls['confirmPassword'].errors.mismatch">* Password and confirm password don't match
+          </div>
+        </mat-error>
+      </p>
+
+
+      <button mat-raised-button color="accent">
+        Update Password
+      </button>
+    </form>
+  </div>
+  <br>
+  <!-- <div style="text-align: end">
+  <a routerLink="/dash">Continue</a>
+  </div> -->
+</mat-card>

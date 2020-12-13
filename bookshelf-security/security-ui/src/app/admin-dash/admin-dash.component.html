@@ -1,0 +1,93 @@
+<br><br><br>
+<div>
+  <div style="text-align: center">
+    <h1>List of Books</h1>
+    <button (click)="addBook()" mat-fab matTooltip="Add a new book" matTooltipPosition="after" color="accent"
+            aria-label="add icon">
+      <mat-icon>library_add</mat-icon>
+    </button>
+  </div>
+  <br>
+  <table mat-table [dataSource]="booksDataSource" multiTemplateDataRows class="mat-elevation-z8">
+    <ng-container matColumnDef="{{column}}" *ngFor="let column of booksDisplayedColumns">
+      <th mat-header-cell *matHeaderCellDef>
+        <span *ngIf="column!='delete'">{{column|titlecase}}</span>
+      </th>
+      <td mat-cell *matCellDef="let book">
+        <span *ngIf="column!='delete'; else elseBlock">{{book[column]}}</span>
+        <ng-template #elseBlock>
+          <div style="text-align: end">
+            <button mat-stroked-button (click)="rowClick(book, true)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let book" [attr.colspan]="booksDisplayedColumns.length">
+        <div class="book-detail" [@detailExpand]="book == expandedBook ? 'expanded' : 'collapsed'">
+          <img [src]="globalVars.getApiUrl()+'/books/cover/'+book.id | authimage | async" height="210px" width="130px"
+               style="padding: 5px">
+          <div class="book-description">
+            {{book.desc}}
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="booksDisplayedColumns"></tr>
+    <tr mat-row *matRowDef="let book; columns: booksDisplayedColumns;" class="book-row"
+        [class.book-expanded-row]="expandedBook === book" (click)="rowClick(book, false)">
+    </tr>
+    <!-- rowClick(book, false)
+        expandedBook = expandedBook === book ? null : book -->
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="book-detail-row"></tr>
+  </table>
+  <br><br>
+  <h1 style="text-align: center">List of Users</h1>
+  <table mat-table [dataSource]="usersDataSource" class="mat-elevation-z8">
+
+    <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+
+    <!-- Full Name Column -->
+    <ng-container matColumnDef="fullName">
+      <th mat-header-cell *matHeaderCellDef> Full Name</th>
+      <td mat-cell *matCellDef="let user"> {{user.fullName}} </td>
+    </ng-container>
+
+    <!-- Email Column -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef> Email</th>
+      <td mat-cell *matCellDef="let user"> {{user.email}} </td>
+    </ng-container>
+
+    <!-- Role Column -->
+    <ng-container matColumnDef="role">
+      <th mat-header-cell *matHeaderCellDef> Role</th>
+      <td mat-cell *matCellDef="let user"> {{user.role}} </td>
+    </ng-container>
+
+    <!-- Last Seen Column -->
+    <ng-container matColumnDef="lastSeen">
+      <th mat-header-cell *matHeaderCellDef> Last Seen</th>
+      <td mat-cell *matCellDef="let user"> {{user.lastSeen}} </td>
+    </ng-container>
+
+    <!-- Edit Column -->
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let user">
+        <button mat-stroked-button (click)="editUser(user)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="usersDisplayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: usersDisplayedColumns;"></tr>
+  </table>
+</div>

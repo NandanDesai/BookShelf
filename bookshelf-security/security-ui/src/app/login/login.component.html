@@ -1,0 +1,36 @@
+<mat-card>
+  <br>
+  <mat-card-title>Welcome!</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <p>
+        <mat-form-field>
+          <input type="text" matInput placeholder="Email" formControlName="email" autocomplete="off">
+        </mat-form-field>
+        <mat-error
+          *ngIf="submitted && form.controls['email'].invalid && (form.controls['email'].dirty || form.controls['email'].touched)">
+          <div *ngIf="form.controls['email'].errors.required">* Email is required</div>
+        </mat-error>
+      </p>
+
+      <p>
+        <mat-form-field>
+          <input type="password" matInput placeholder="Password" formControlName="password" autocomplete="off">
+        </mat-form-field>
+        <mat-error
+          *ngIf="submitted && form.controls['password'].invalid && (form.controls['password'].dirty || form.controls['password'].touched)">
+          * Password is required
+        </mat-error>
+      </p>
+
+      <div class="button">
+        <button type="submit" mat-button>Login</button>
+      </div>
+      <br>
+      <a routerLink="/signup">Don't have an account? Sign up!</a>
+    </form>
+  </mat-card-content>
+
+  <p style="text-align: center; font-size: 10px">developed with ❤️ by Nandan Desai</p>
+</mat-card>
+
