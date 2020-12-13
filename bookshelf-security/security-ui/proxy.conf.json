@@ -1,8 +1,13 @@
 {
-    "/base/*": {
+    "/secure/*": {
         "target": "http://localhost:8080",
         "secure": false,
         "logLevel": "debug"
+    },
+    "/insecure/*": {
+      "target": "http://localhost:8080",
+      "secure": false,
+      "logLevel": "debug"
     },
     "changeOrigin": true
 }
