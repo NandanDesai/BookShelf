@@ -20,7 +20,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/base")
+@RequestMapping("/secure")
 public class UserController {
 
     private Logger logger = LoggerFactory.getLogger(UserController.class);
