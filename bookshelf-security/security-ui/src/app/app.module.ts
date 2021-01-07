@@ -40,6 +40,7 @@ import {AuthGuard} from './_misc/auth.guard';
 import {RoleGuard} from './_misc/role.guard';
 import {LoggedInGuard} from './_misc/loggedin.guard';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -177,7 +178,8 @@ const customNotifierOptions: NotifierOptions = {
     MatSelectModule,
     MatProgressSpinnerModule,
     SharedModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    RecaptchaModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
   bootstrap: [AppComponent]

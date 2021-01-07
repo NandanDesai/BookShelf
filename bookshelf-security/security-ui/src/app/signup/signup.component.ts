@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../_misc/auth.service';
 import {NotifierService} from 'angular-notifier';
@@ -7,15 +7,18 @@ import {Router} from '@angular/router';
 import {TokenStorageService} from '../_misc/tokenstore.service';
 import {TokenPayload} from '../_models/token-payload';
 import decode from 'jwt-decode';
+import {ModeChangeListener} from '../_misc/mode-change.listener';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
-export class SignupComponent {
+export class SignupComponent implements OnInit{
 
   submitted = false;
+  secureMode = false;
+  captchaResponseToken = null;
   tooltipText = 'The following are the constraints of for the password:\n' +
     '* It contains at least 8 characters and at most 20 characters.\n' +
     '* It contains at least one digit.\n' +
@@ -36,7 +39,20 @@ export class SignupComponent {
               private readonly notifier: NotifierService,
               private isLoadingService: IsLoadingService,
               private router: Router,
-              private tokenService: TokenStorageService) {
+              private tokenService: TokenStorageService,
+              private modeChangeListener: ModeChangeListener) {
+  }
+
+  ngOnInit(): void {
+    this.modeChangeListener.profilePicChanged$.subscribe(
+      secure => {
+        if (secure){
+          this.secureMode = true;
+        }else{
+          this.secureMode = false;
+        }
+      }
+    );
   }
 
   private passwordsMatchValidator(formGroup: FormGroup): void {
@@ -63,15 +79,22 @@ export class SignupComponent {
     }
   }
 
+  captchaResolved(event): void {
+    this.captchaResponseToken = event;
+  }
+
   submit(): void {
-    console.log('form valid?: ' + this.form.valid);
     this.submitted = true;
+    if (this.secureMode && (this.captchaResponseToken == null)) {
+      return;
+    }
     if (this.form.valid) {
       this.isLoadingService.add();
       const userInfo = {
         email: this.form.controls.email.value,
         password: this.form.controls.password.value,
-        fullName: this.form.controls.fullName.value
+        fullName: this.form.controls.fullName.value,
+        challengeToken: this.captchaResponseToken
       };
       this.authService.signup(userInfo).subscribe(
         data => {

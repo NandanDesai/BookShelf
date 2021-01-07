@@ -12,6 +12,7 @@ import {NotifierService} from 'angular-notifier';
 import {ProfilePicChangeListener} from './_misc/profilepic-change-listener.service';
 import {environment} from '../environments/environment';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
+import {ModeChangeListener} from './_misc/mode-change.listener';
 
 @Component({
   selector: 'app-root',
@@ -38,7 +39,8 @@ export class AppComponent implements OnInit {
     private dialog: MatDialog,
     private tokenService: TokenStorageService,
     private notifier: NotifierService,
-    private profilePicChangeListener: ProfilePicChangeListener
+    private profilePicChangeListener: ProfilePicChangeListener,
+    private modeChangeListener: ModeChangeListener
   ) {
   }
 
@@ -137,11 +139,13 @@ export class AppComponent implements OnInit {
       this.toolbarStyle = 'color: white; background:green';
       this.globalVars.setApiUrlExtension('/secure');
       console.log('SECURE API URL: ' + this.globalVars.getApiUrl());
+      this.modeChangeListener.secureMode(true);
     } else {
       this.mode = 'Insecure';
       this.toolbarStyle = 'color: white; background: #E10712';
       this.globalVars.setApiUrlExtension('/insecure');
       console.log('INSECURE API URL: ' + this.globalVars.getApiUrl());
+      this.modeChangeListener.secureMode(false);
     }
   }
 

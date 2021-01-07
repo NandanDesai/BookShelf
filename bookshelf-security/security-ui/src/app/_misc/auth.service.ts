@@ -23,7 +23,8 @@ export class AuthService {
     console.log('API URL: ' + this.globalVars.getApiUrl());
     return this.http.post(url, {
       email: credentials.email,
-      password: credentials.password
+      password: credentials.password,
+      challengeToken: credentials.challengeToken
     }, this.httpOptions);
   }
 
@@ -31,7 +32,8 @@ export class AuthService {
     return this.http.post(this.globalVars.getApiUrl() + '/signup', {
       fullName: user.fullName,
       email: user.email,
-      password: user.password
+      password: user.password,
+      challengeToken: user.challengeToken
     }, this.httpOptions);
   }
 }

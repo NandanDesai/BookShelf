@@ -50,7 +50,13 @@
           </div>
         </mat-error>
       </p>
-
+      <p *ngIf="secureMode">
+        <re-captcha (resolved)="captchaResolved($event)" siteKey="6LcNqCIaAAAAAGMdDtMN3_R1Srv_krUjcJFkJOjF">
+        </re-captcha>
+        <mat-error *ngIf="submitted && (captchaResponseToken==null)">
+          <div >* Please solve the reCAPTCHA challenge</div>
+        </mat-error>
+      </p>
       <div class="button">
         <button type="submit" mat-button>Sign Up</button>
       </div>
