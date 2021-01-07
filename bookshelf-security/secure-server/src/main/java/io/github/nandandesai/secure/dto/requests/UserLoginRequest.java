@@ -18,4 +18,8 @@ public class UserLoginRequest {
     @NotNull(message = "Password cannot be Null")
     @NotEmpty(message = "Password cannot be empty")
     private String password;
+
+    @NotNull(message = "Challenge token cannot be Null")
+    @NotEmpty(message = "Challenge token cannot be empty")
+    private String challengeToken;
 }

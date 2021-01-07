@@ -34,11 +34,16 @@ dependencies {
 	//spring security
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.4.0'
 
+	//for generating and validating jwts
 	implementation 'com.auth0:java-jwt:3.11.0'
 
+	//for verifying reCAPTCHA tokens through HTTP API
+	implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+
 	// for @Getter, @Setter etc. annotations
-	compileOnly 'org.projectlombok:lombok:1.18.12'
-	annotationProcessor 'org.projectlombok:lombok:1.18.12'
+	compileOnly 'org.projectlombok:lombok:1.18.16'
+	annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

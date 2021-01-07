@@ -42,6 +42,12 @@ public class CommonExceptionHandler {
         return ex.getResponseEntity();
     }
 
+    @ExceptionHandler(RecaptchaVerificationException.class)
+    public ResponseEntity<Response> recaptchaVerificationExceptions(RecaptchaVerificationException ex) {
+        logger.error("recaptcha failed: " + ex.getMessage());
+        return ex.getResponseEntity();
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Response> accessDeniedExceptions(AccessDeniedException ex) {
         List<String> details = new ArrayList<String>();

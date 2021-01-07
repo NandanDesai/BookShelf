@@ -1,5 +1,6 @@
 package io.github.nandandesai.secure.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.nandandesai.secure.configs.UserDataPaths;
 import io.github.nandandesai.secure.dto.Photo;
 import io.github.nandandesai.secure.dto.UserDto;
@@ -14,12 +15,14 @@ import io.github.nandandesai.secure.security.UserSecurityDetailsService;
 import io.github.nandandesai.secure.security.models.UserAuthority;
 import io.github.nandandesai.secure.security.models.UserSecurityDetails;
 import io.github.nandandesai.secure.utils.FileOperation;
+import okhttp3.*;
 import org.apache.commons.imaging.ImageInfo;
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.Imaging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -61,6 +64,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Value("${recaptcha.secret}")
+    private String recaptchaSecret;
+
     @PreAuthorize("hasAuthority('Admin')")
     public List<UserDto> getAllUsers() {
         return UserDto.getUserDtoListFromUsers(userRepository.findAll());
@@ -75,8 +81,38 @@ public class UserService {
         return UserDto.getUserDtoFromUser(userOptional.get());
     }
 
+    public boolean verifyRecaptchaChallenge(String userChallengeToken) throws InternalServerException {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("secret", recaptchaSecret)
+                .addFormDataPart("response", userChallengeToken)
+                .build();
+        Request request = new Request.Builder()
+                .url("https://www.google.com/recaptcha/api/siteverify")
+                .post(requestBody)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            String responseJsonString = response.body().string();
+            ObjectMapper mapper = new ObjectMapper();
+            boolean success = mapper.readTree(responseJsonString).findValue("success").asBoolean();
+            logger.info("reCAPTCHA success: "+success);
+            return success;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        throw new InternalServerException("There was a problem verifying the reCAPTCHA challenge.");
+    }
+
     //returns jwt if success
-    public String addUser(UserSignUpRequest userSignUpRequest) throws InternalServerException, DuplicateEntityException {
+    public String addUser(UserSignUpRequest userSignUpRequest) throws InternalServerException, DuplicateEntityException, RecaptchaVerificationException {
+        logger.info("CHALLENGE TOKEN: " + userSignUpRequest.getChallengeToken());
+        logger.info("RECAPTCHA SECRET: "+ recaptchaSecret);
+        boolean success = verifyRecaptchaChallenge(userSignUpRequest.getChallengeToken());
+        if(!success){
+            throw new RecaptchaVerificationException("reCAPTCHA challenge failed");
+        }
         Optional<User> optionalUser = userRepository.findByEmail(userSignUpRequest.getEmail());
         if(optionalUser.isPresent()){
             throw new DuplicateEntityException("email \""+userSignUpRequest.getEmail()+"\" already exists");
@@ -98,6 +134,7 @@ public class UserService {
         UserLoginRequest userLoginRequest = new UserLoginRequest();
         userLoginRequest.setEmail(userSignUpRequest.getEmail());
         userLoginRequest.setPassword(userSignUpRequest.getPassword());
+        userLoginRequest.setChallengeToken(userSignUpRequest.getChallengeToken());
         try {
             return login(userLoginRequest);
         } catch (LoginFailedException e) {
@@ -108,7 +145,13 @@ public class UserService {
     }
 
     //returns a JWT if success
-    public String login(UserLoginRequest userLoginRequest) throws LoginFailedException {
+    public String login(UserLoginRequest userLoginRequest) throws LoginFailedException, InternalServerException, RecaptchaVerificationException {
+        logger.info("CHALLENGE TOKEN: " + userLoginRequest.getChallengeToken());
+        logger.info("RECAPTCHA SECRET: "+ recaptchaSecret);
+        boolean success = verifyRecaptchaChallenge(userLoginRequest.getChallengeToken());
+        if(!success){
+            throw new RecaptchaVerificationException("reCAPTCHA challenge failed");
+        }
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userLoginRequest.getEmail(), userLoginRequest.getPassword()));

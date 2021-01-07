@@ -46,14 +46,14 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public Response<String> signUp(@Valid @RequestBody UserSignUpRequest userSignUpRequest) throws InternalServerException, DuplicateEntityException {
+    public Response<String> signUp(@Valid @RequestBody UserSignUpRequest userSignUpRequest) throws InternalServerException, DuplicateEntityException, RecaptchaVerificationException {
         String token = userService.addUser(userSignUpRequest);
         return new Response<String>().setPayload(token)
                 .setType(ResponseType.SUCCESS);
     }
 
     @PostMapping("/login")
-    public Response<String> login(@Valid @RequestBody UserLoginRequest userLoginRequest) throws LoginFailedException {
+    public Response<String> login(@Valid @RequestBody UserLoginRequest userLoginRequest) throws LoginFailedException, RecaptchaVerificationException, InternalServerException {
         String token = userService.login(userLoginRequest);
         return new Response<String>().setPayload(token)
                 .setType(ResponseType.SUCCESS);

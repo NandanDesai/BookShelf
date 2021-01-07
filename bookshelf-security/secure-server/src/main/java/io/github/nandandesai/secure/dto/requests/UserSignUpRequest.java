@@ -25,7 +25,7 @@ public class UserSignUpRequest {
     @NotEmpty(message = "Name cannot be empty")
     private String fullName;
 
-//    @NotNull(message = "profile pic file cannot be Null")
-//    @NotEmpty(message = "profile pic file cannot be empty")
-//    private MultipartFile image;
+    @NotNull(message = "Challenge token cannot be Null")
+    @NotEmpty(message = "Challenge token cannot be empty")
+    private String challengeToken;
 }
