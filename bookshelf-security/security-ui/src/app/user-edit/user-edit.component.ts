@@ -5,7 +5,7 @@ import {UserService} from '../_misc/user.service';
 import {GlobalVars} from '../global.vars';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ProfilePicChangeListener} from '../_misc/profilepic-change-listener.service';
-import {TokenStorageService} from '../_misc/tokenstore.service';
+import {StorageService} from '../_misc/storage.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -43,13 +43,17 @@ export class UserPhotoUploadComponent implements OnInit {
     private globalVars: GlobalVars,
     private fb: FormBuilder,
     private profilePicChangeListener: ProfilePicChangeListener,
-    private tokenService: TokenStorageService
+    private storageService: StorageService
   ) {
 
   }
 
   ngOnInit(): void {
-    this.userId = this.tokenService.getPayload().userId;
+    if (this.globalVars.getApiUrl() === '/secure') {
+      this.userId = this.storageService.getUser().id;
+    }else{
+      this.userId = this.storageService.getPayload().userId;
+    }
     this.userPhotoUrl = this.globalVars.getApiUrl() + '/users/photo/' + this.userId;
   }
 

@@ -4,10 +4,11 @@ import {AuthService} from '../_misc/auth.service';
 import {IsLoadingService} from '@service-work/is-loading';
 import {Router} from '@angular/router';
 import {NotifierService} from 'angular-notifier';
-import {TokenStorageService} from '../_misc/tokenstore.service';
+import {StorageService} from '../_misc/storage.service';
 import decode from 'jwt-decode';
 import {TokenPayload} from '../_models/token-payload';
 import {ModeChangeListener} from '../_misc/mode-change.listener';
+import {GlobalVars} from "../global.vars";
 
 @Component({
   selector: 'app-login',
@@ -30,10 +31,11 @@ export class LoginComponent implements OnInit{
     private readonly notifier: NotifierService,
     private isLoadingService: IsLoadingService,
     private router: Router,
-    private tokenService: TokenStorageService,
-    private modeChangeListener: ModeChangeListener
+    private storageService: StorageService,
+    private modeChangeListener: ModeChangeListener,
+    private globalVars: GlobalVars
   ) {
-    this.tokenService.clearStore();
+    this.storageService.clearStore();
   }
 
 
@@ -69,10 +71,15 @@ export class LoginComponent implements OnInit{
         data => {
           this.notifier.notify('success', 'Login Successful');
           console.log(data);
-          this.tokenService.saveToken(data.payload);
-          const tokenPayload: TokenPayload = decode(data.payload); // decode the jwt payload
-          this.tokenService.savePayload(tokenPayload);
-          console.log(tokenPayload);
+          if (this.globalVars.getApiUrl() === '/secure'){
+            console.log(data.payload);
+            this.storageService.saveUser(data.payload);
+          }else{
+            this.storageService.saveToken(data.payload);
+            const tokenPayload: TokenPayload = decode(data.payload); // decode the jwt payload
+            this.storageService.savePayload(tokenPayload);
+            console.log(tokenPayload);
+          }
           this.isLoadingService.remove();
 
           this.router.navigate(['/dash', {}]);

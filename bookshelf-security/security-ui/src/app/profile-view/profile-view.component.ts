@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {IsLoadingService} from '@service-work/is-loading';
 import {User} from '../_models/user';
 import {UserService} from '../_misc/user.service';
-import {TokenStorageService} from '../_misc/tokenstore.service';
+import {StorageService} from '../_misc/storage.service';
 import {NotifierService} from 'angular-notifier';
 import {GlobalVars} from '../global.vars';
 
@@ -20,7 +20,7 @@ export class ProfileViewComponent implements OnInit {
     private router: Router,
     private isLoadingService: IsLoadingService,
     private userService: UserService,
-    private tokenService: TokenStorageService,
+    private storageService: StorageService,
     private notifier: NotifierService,
     private globalVars: GlobalVars
   ) {
@@ -28,19 +28,26 @@ export class ProfileViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoadingService.add();
-    this.userService.getUser(this.tokenService.getPayload().userId).subscribe(
-      data => {
-        this.user = data.payload;
-        this.isLoadingService.remove();
-        this.userPhotoUrl =
-          this.globalVars.getApiUrl() + '/users/photo/' + this.user.id;
-      },
-      err => {
-        console.log(err);
-        this.notifier.notify('error', 'Failed to load your profile info');
-        this.isLoadingService.remove();
-      }
-    );
+    if (this.globalVars.getApiUrl() === '/secure'){
+      this.user = this.storageService.getUser();
+      this.isLoadingService.remove();
+      this.userPhotoUrl =
+        this.globalVars.getApiUrl() + '/users/photo/' + this.user.id;
+    }else {
+      this.userService.getUser(this.storageService.getPayload().userId).subscribe(
+        data => {
+          this.user = data.payload;
+          this.isLoadingService.remove();
+          this.userPhotoUrl =
+            this.globalVars.getApiUrl() + '/users/photo/' + this.user.id;
+        },
+        err => {
+          console.log(err);
+          this.notifier.notify('error', 'Failed to load your profile info');
+          this.isLoadingService.remove();
+        }
+      );
+    }
   }
 
   editButtonCLicked(): void {

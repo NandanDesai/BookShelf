@@ -11,7 +11,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatGridListModule} from '@angular/material/grid-list';
@@ -99,88 +99,89 @@ const customNotifierOptions: NotifierOptions = {
     DeleteBookDialog,
     AboutDialog
   ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    RouterModule.forRoot([
-      {
-        path: '',
-        component: LoginComponent,
-        canActivate: [LoggedInGuard]
-      },
-      {
-        path: 'login',
-        component: LoginComponent,
-        data: {animationState: 'login'},
-        canActivate: [LoggedInGuard]
-      },
-      {
-        path: 'signup',
-        component: SignupComponent,
-        data: {animationState: 'signup'},
-        canActivate: [LoggedInGuard]
-      },
-      {
-        path: 'dash',
-        component: DashComponent,
-        data: {animationState: 'dash'},
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'pdf',
-        component: PDFViewerComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'profile',
-        component: ProfileViewComponent,
-        data: {animationState: 'profile'},
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'useredit',
-        component: UserPhotoUploadComponent,
-        data: {animationState: 'useredit'},
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'admindash',
-        component: AdminDashComponent,
-        data: {animationState: 'admindash'},
-        canActivate: [AuthGuard, RoleGuard]
-      },
-      {
-        path: '**',
-        redirectTo: ''
-      },
-    ], { useHash: true }),
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    ReactiveFormsModule,
-    MatProgressBarModule,
-    MatToolbarModule,
-    MatGridListModule,
-    MatMenuModule,
-    MatIconModule,
-    MatBadgeModule,
-    IsLoadingModule,
-    NotifierModule.withConfig(customNotifierOptions),
-    PdfViewerModule,
-    MatSidenavModule,
-    MatDividerModule,
-    MatTooltipModule,
-    MatListModule,
-    MatTableModule,
-    MatDialogModule,
-    MatSelectModule,
-    MatProgressSpinnerModule,
-    SharedModule,
-    MatSlideToggleModule,
-    RecaptchaModule
-  ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        RouterModule.forRoot([
+            {
+                path: '',
+                component: LoginComponent,
+                canActivate: [LoggedInGuard]
+            },
+            {
+                path: 'login',
+                component: LoginComponent,
+                data: {animationState: 'login'},
+                canActivate: [LoggedInGuard]
+            },
+            {
+                path: 'signup',
+                component: SignupComponent,
+                data: {animationState: 'signup'},
+                canActivate: [LoggedInGuard]
+            },
+            {
+                path: 'dash',
+                component: DashComponent,
+                data: {animationState: 'dash'},
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'pdf',
+                component: PDFViewerComponent,
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'profile',
+                component: ProfileViewComponent,
+                data: {animationState: 'profile'},
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'useredit',
+                component: UserPhotoUploadComponent,
+                data: {animationState: 'useredit'},
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'admindash',
+                component: AdminDashComponent,
+                data: {animationState: 'admindash'},
+                canActivate: [AuthGuard, RoleGuard]
+            },
+            {
+                path: '**',
+                redirectTo: ''
+            },
+        ], {useHash: true}),
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatCardModule,
+        ReactiveFormsModule,
+        MatProgressBarModule,
+        MatToolbarModule,
+        MatGridListModule,
+        MatMenuModule,
+        MatIconModule,
+        MatBadgeModule,
+        IsLoadingModule,
+        NotifierModule.withConfig(customNotifierOptions),
+        PdfViewerModule,
+        MatSidenavModule,
+        MatDividerModule,
+        MatTooltipModule,
+        MatListModule,
+        MatTableModule,
+        MatDialogModule,
+        MatSelectModule,
+        MatProgressSpinnerModule,
+        SharedModule,
+        MatSlideToggleModule,
+        RecaptchaModule,
+        FormsModule
+    ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
   bootstrap: [AppComponent]
 })

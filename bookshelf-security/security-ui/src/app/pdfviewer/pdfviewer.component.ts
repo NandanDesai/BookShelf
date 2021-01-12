@@ -4,7 +4,7 @@ import {NotifierService} from 'angular-notifier';
 import {PDFDocumentProxy} from 'ng2-pdf-viewer';
 import {Book} from '../_models/book';
 import {GlobalVars} from '../global.vars';
-import {TokenStorageService} from '../_misc/tokenstore.service';
+import {StorageService} from '../_misc/storage.service';
 
 @Component({
   selector: 'app-pdfviewer',
@@ -33,7 +33,7 @@ export class PDFViewerComponent implements OnInit, AfterViewInit {
     private readonly notifier: NotifierService,
     private renderer: Renderer2,
     public globalVars: GlobalVars,
-    private tokenStore: TokenStorageService
+    private tokenStore: StorageService
   ) {
   }
 
@@ -52,7 +52,20 @@ export class PDFViewerComponent implements OnInit, AfterViewInit {
       this.book = JSON.parse(window.sessionStorage.getItem('currentBookRead'));
     }
 
-    const userRole = this.tokenStore.getPayload().role;
+
+    let userRole = '';
+    if (this.globalVars.getApiUrl() === '/secure'){
+      userRole = this.tokenStore.getUser().role;
+      this.pdfSrc = {
+        url: this.globalVars.getApiUrl() + '/books/pdf/' + this.book.id
+      };
+    }else{
+      userRole = this.tokenStore.getPayload().role;
+      this.pdfSrc = {
+        url: this.globalVars.getApiUrl() + '/books/pdf/' + this.book.id,
+        httpHeaders: {Authorization: `Bearer ${this.tokenStore.getToken()}`}
+      };
+    }
     const bookRole = this.book.role;
 
     if (this.roleValue[userRole] >= this.roleValue[bookRole]) {
@@ -60,11 +73,6 @@ export class PDFViewerComponent implements OnInit, AfterViewInit {
     } else {
       this.allowed = false;
     }
-
-    this.pdfSrc = {
-      url: this.globalVars.getApiUrl() + '/books/pdf/' + this.book.id,
-      httpHeaders: {Authorization: `Bearer ${this.tokenStore.getToken()}`}
-    };
 
     console.log(this.book);
     console.log('pdfSrc: ' + this.pdfSrc);

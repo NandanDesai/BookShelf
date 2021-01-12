@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
-import {TokenStorageService} from './tokenstore.service';
+import {StorageService} from './storage.service';
+import {GlobalVars} from '../global.vars';
 
 // this guards the AdminDash component from non-admin users
 @Injectable({
@@ -8,12 +9,20 @@ import {TokenStorageService} from './tokenstore.service';
 })
 export class RoleGuard implements CanActivate {
   constructor(private router: Router,
-              private tokenStore: TokenStorageService ) {}
+              private storageService: StorageService,
+              private globalVars: GlobalVars) {}
   canActivate(): boolean {
-    if (this.tokenStore.getToken() != null){
-      if (this.tokenStore.getPayload().role === 'Admin') {
+    if (this.globalVars.getApiUrl() === '/secure'){
+      if (this.storageService.getUser().role === 'Admin'){
         console.log('role guard returning true');
         return true;
+      }
+    }else {
+      if (this.storageService.getToken() != null) {
+        if (this.storageService.getPayload().role === 'Admin') {
+          console.log('role guard returning true');
+          return true;
+        }
       }
     }
     console.log('role guard returning false');

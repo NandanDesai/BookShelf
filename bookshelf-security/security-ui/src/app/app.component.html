@@ -2,7 +2,7 @@
   <span><a routerLink="/" style="text-decoration: none; color: white;">BookShelf Security</a></span>
   <span class="custom-spacer"></span>
   <div [hidden]="!showToggle">
-    <mat-slide-toggle class="toggle" color="accent" (change)="onToggle($event)">
+    <mat-slide-toggle [(ngModel)]="toggleChecked"  class="toggle" color="accent" (change)="onToggle($event)">
       {{mode}}
     </mat-slide-toggle>
   </div>

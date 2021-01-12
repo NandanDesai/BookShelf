@@ -6,13 +6,14 @@ import {Observable} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {routeTransitionAnimations} from './route-transition-animations';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {TokenStorageService} from './_misc/tokenstore.service';
+import {StorageService} from './_misc/storage.service';
 import {TokenPayload} from './_models/token-payload';
 import {NotifierService} from 'angular-notifier';
 import {ProfilePicChangeListener} from './_misc/profilepic-change-listener.service';
 import {environment} from '../environments/environment';
-import {MatSlideToggleChange} from '@angular/material/slide-toggle';
+import {MatSlideToggleChange, MatSlideToggle} from '@angular/material/slide-toggle';
 import {ModeChangeListener} from './_misc/mode-change.listener';
+import {User} from './_models/user';
 
 @Component({
   selector: 'app-root',
@@ -24,9 +25,10 @@ export class AppComponent implements OnInit {
   isLoading: Observable<boolean>;
   showMenu = false;
 
-  mode = 'Insecure';
+  mode = 'undefined';
   showToggle = true;
   toolbarStyle = 'color: white; background: #E10712';
+  toggleChecked = false;
 
   role = 'undefined';
   userId = -1;
@@ -37,7 +39,7 @@ export class AppComponent implements OnInit {
     private globalVars: GlobalVars,
     private router: Router,
     private dialog: MatDialog,
-    private tokenService: TokenStorageService,
+    private storageService: StorageService,
     private notifier: NotifierService,
     private profilePicChangeListener: ProfilePicChangeListener,
     private modeChangeListener: ModeChangeListener
@@ -45,7 +47,21 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.globalVars.setApiUrlExtension('/insecure');
+    // if localstorage has the api url saved, then restore that and all other configs
+    // that are required by the app. This helps us retain the same state when the page reloads.
+    if (this.storageService.getApiUrl() != null){
+      this.globalVars.setApiUrlExtension(this.storageService.getApiUrl());
+      this.toolbarStyle = this.storageService.getToolbarStyle();
+      this.toggleChecked = JSON.parse(this.storageService.getSlideToggleState());
+    }else {
+      this.globalVars.setApiUrlExtension('/insecure');
+      this.storageService.saveApiUrl('/insecure');
+    }
+    if (this.toggleChecked){
+      this.mode = 'Secure';
+    }else {
+      this.mode = 'Insecure';
+    }
     console.log('DEFAULT API URL: ' + this.globalVars.getApiUrl());
 
     // Note, because `IsLoadingService#isLoading$()` returns
@@ -111,14 +127,21 @@ export class AppComponent implements OnInit {
       this.showToggle = false;
       this.showMenu = true;
 
-      // if the route is not /login or /signup or /, then load the user role and id from jwt token payload
-      // this will be used to set the Role name and Profile Pic on the UI toolbar
-      const tokenPayload: TokenPayload = this.tokenService.getPayload();
-      if (tokenPayload) {
-        this.role = tokenPayload.role;
-        this.userId = tokenPayload.userId;
-        this.userPhotoUrl =
-          this.globalVars.getApiUrl() + '/users/photo/' + this.userId;
+      if (this.globalVars.getApiUrl() === '/secure'){
+        const user: User = this.storageService.getUser();
+        this.role = user.role;
+        this.userId = user.id;
+        this.userPhotoUrl = this.globalVars.getApiUrl() + '/users/photo/' + this.userId;
+      }else {
+        // if the route is not /login or /signup or /, then load the user role and id from jwt token payload
+        // this will be used to set the Role name and Profile Pic on the UI toolbar
+        const tokenPayload: TokenPayload = this.storageService.getPayload();
+        if (tokenPayload) {
+          this.role = tokenPayload.role;
+          this.userId = tokenPayload.userId;
+          this.userPhotoUrl =
+            this.globalVars.getApiUrl() + '/users/photo/' + this.userId;
+        }
       }
     }
   }
@@ -147,6 +170,13 @@ export class AppComponent implements OnInit {
       console.log('INSECURE API URL: ' + this.globalVars.getApiUrl());
       this.modeChangeListener.secureMode(false);
     }
+
+    console.log('toggleChecked: '+this.toggleChecked);
+
+    // save these parameters so that they won't be lost on page reload
+    this.storageService.saveApiUrl(this.globalVars.getApiUrl());
+    this.storageService.saveToolbarStyle(this.toolbarStyle);
+    this.storageService.saveSlideToggleState(this.toggleChecked);
   }
 
   showProfile(): void {
@@ -161,7 +191,7 @@ export class AppComponent implements OnInit {
 
   logout(): void {
     console.log('logout method called');
-    this.tokenService.clearStore();
+    this.storageService.clearStore();
     this.router.navigate(['/login', {}]);
     this.notifier.notify('success', 'Successfully logged out');
   }

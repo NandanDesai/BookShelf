@@ -1,7 +1,8 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {TokenStorageService} from './tokenstore.service';
+import {StorageService} from './storage.service';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
+import {GlobalVars} from "../global.vars";
 
 @Pipe({
   name: 'authimage'
@@ -10,15 +11,24 @@ export class AuthImagePipe implements PipeTransform {
 
   constructor(
     private http: HttpClient,
-    private tokenStore: TokenStorageService,
-    private sanitizer: DomSanitizer) {
+    private storageService: StorageService,
+    private sanitizer: DomSanitizer,
+    private globalVars: GlobalVars) {
   }
 
   async transform(src: string): Promise<SafeUrl> {
-    const token = this.tokenStore.getToken();
-    const headers = new HttpHeaders({Authorization: `Bearer ${token}`});
+    let headers = null;
+    if (this.globalVars.getApiUrl() !== '/secure') {
+      const token = this.storageService.getToken();
+      headers = new HttpHeaders({Authorization: `Bearer ${token}`});
+    }
     try {
-      const imageBlob = await this.http.get(src, {headers, responseType: 'blob'}).toPromise();
+      let imageBlob = null;
+      if (headers != null) {
+        imageBlob = await this.http.get(src, {headers, responseType: 'blob'}).toPromise();
+      } else {
+        imageBlob = await this.http.get(src, {responseType: 'blob'}).toPromise();
+      }
       return new Promise((resolve, reject) => {
         const urlCreator = window.URL;
         const imageUrl = urlCreator.createObjectURL(imageBlob);
@@ -34,6 +44,7 @@ export class AuthImagePipe implements PipeTransform {
     } catch {
       return '';
     }
+
   }
 
 }

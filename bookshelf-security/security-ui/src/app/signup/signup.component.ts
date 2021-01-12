@@ -4,10 +4,11 @@ import {AuthService} from '../_misc/auth.service';
 import {NotifierService} from 'angular-notifier';
 import {IsLoadingService} from '@service-work/is-loading';
 import {Router} from '@angular/router';
-import {TokenStorageService} from '../_misc/tokenstore.service';
+import {StorageService} from '../_misc/storage.service';
 import {TokenPayload} from '../_models/token-payload';
 import decode from 'jwt-decode';
 import {ModeChangeListener} from '../_misc/mode-change.listener';
+import {GlobalVars} from "../global.vars";
 
 @Component({
   selector: 'app-signup',
@@ -39,8 +40,9 @@ export class SignupComponent implements OnInit{
               private readonly notifier: NotifierService,
               private isLoadingService: IsLoadingService,
               private router: Router,
-              private tokenService: TokenStorageService,
-              private modeChangeListener: ModeChangeListener) {
+              private storageService: StorageService,
+              private modeChangeListener: ModeChangeListener,
+              private globalVars: GlobalVars) {
   }
 
   ngOnInit(): void {
@@ -100,10 +102,15 @@ export class SignupComponent implements OnInit{
         data => {
           this.notifier.notify('success', 'Successfully Registered');
           console.log(data);
-          this.tokenService.saveToken(data.payload);
-          const tokenPayload: TokenPayload = decode(data.payload); // decode the jwt payload
-          this.tokenService.savePayload(tokenPayload);
-          console.log(tokenPayload);
+          if (this.globalVars.getApiUrl() === '/secure'){
+            console.log(data.payload);
+            this.storageService.saveUser(data.payload);
+          }else{
+            this.storageService.saveToken(data.payload);
+            const tokenPayload: TokenPayload = decode(data.payload); // decode the jwt payload
+            this.storageService.savePayload(tokenPayload);
+            console.log(tokenPayload);
+          }
           this.notifier.notify('success', 'Welcome, ' + userInfo.fullName + '!');
           this.isLoadingService.remove();
 
