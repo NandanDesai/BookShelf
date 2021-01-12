@@ -2,6 +2,7 @@ package io.github.nandandesai.secure.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.nandandesai.secure.configs.UserDataPaths;
+import io.github.nandandesai.secure.dto.LoginSuccessResult;
 import io.github.nandandesai.secure.dto.Photo;
 import io.github.nandandesai.secure.dto.UserDto;
 import io.github.nandandesai.secure.dto.requests.*;
@@ -106,7 +107,7 @@ public class UserService {
     }
 
     //returns jwt if success
-    public String addUser(UserSignUpRequest userSignUpRequest) throws InternalServerException, DuplicateEntityException, RecaptchaVerificationException {
+    public LoginSuccessResult addUser(UserSignUpRequest userSignUpRequest) throws InternalServerException, DuplicateEntityException, RecaptchaVerificationException {
         logger.info("CHALLENGE TOKEN: " + userSignUpRequest.getChallengeToken());
         logger.info("RECAPTCHA SECRET: "+ recaptchaSecret);
         boolean success = verifyRecaptchaChallenge(userSignUpRequest.getChallengeToken());
@@ -145,7 +146,7 @@ public class UserService {
     }
 
     //returns a JWT if success
-    public String login(UserLoginRequest userLoginRequest) throws LoginFailedException, InternalServerException, RecaptchaVerificationException {
+    public LoginSuccessResult login(UserLoginRequest userLoginRequest) throws LoginFailedException, InternalServerException, RecaptchaVerificationException {
         logger.info("CHALLENGE TOKEN: " + userLoginRequest.getChallengeToken());
         logger.info("RECAPTCHA SECRET: "+ recaptchaSecret);
         boolean success = verifyRecaptchaChallenge(userLoginRequest.getChallengeToken());
@@ -171,8 +172,10 @@ public class UserService {
         user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
 
-        //create and return the token
-        return jwtService.createToken(userId, email, role);
+        //create the token
+        String token = jwtService.createToken(userId, email, role);
+
+        return new LoginSuccessResult().setToken(token).setUserDto(UserDto.getUserDtoFromUser(user));
     }
 
     @PreAuthorize("#userPasswordRequest.id == authentication.principal.grantedAuthorities[0].userId")
