@@ -37,7 +37,7 @@
       <br><br>
       <br><br><br><br>
     </div>
-    <mat-grid-list cols="3" rowHeight="1:1">
+    <mat-grid-list *ngIf="books.length!=0" cols="3" rowHeight="1:1">
       <mat-grid-tile *ngFor="let book of books">
         <a routerLink="/pdf" [state]="{ data: book}" matBadge="{{book.role}}" class="stretch-badge"
            matBadgeColor="{{book.role!='Free'?'accent':'primary'}}">

@@ -62,12 +62,12 @@ export class DashComponent implements OnInit {
     if (this.form.valid && this.searchKeyword != null) {
       this.searchSubmitted = true;
       console.log('search keyword: ' + this.searchKeyword);
+      this.books = [];
       this.isLoadingService.add();
       setTimeout(() => {
         this.dashService.search(this.searchKeyword).subscribe(
           data => {
             console.log(data);
-            this.books = [];
             this.books = Array.from(data.payload);
             this.isLoadingService.remove();
           },

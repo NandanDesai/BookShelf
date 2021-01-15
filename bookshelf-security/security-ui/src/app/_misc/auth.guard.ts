@@ -10,7 +10,7 @@ export class AuthGuard implements CanActivate {
               private storageService: StorageService,
               private globalVars: GlobalVars) {}
   canActivate(): boolean {
-    console.log("authguard: apiUrl="+this.globalVars.getApiUrl());
+    console.log('authguard: apiUrl='+this.globalVars.getApiUrl());
     if (this.globalVars.getApiUrl() === '/secure'){
       if (this.storageService.getUser() != null){
         return true;
