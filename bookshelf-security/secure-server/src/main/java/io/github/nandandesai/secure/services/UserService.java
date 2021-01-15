@@ -137,7 +137,7 @@ public class UserService {
         userLoginRequest.setPassword(userSignUpRequest.getPassword());
         userLoginRequest.setChallengeToken(userSignUpRequest.getChallengeToken());
         try {
-            return login(userLoginRequest);
+            return login(userLoginRequest, true);
         } catch (LoginFailedException e) {
             logger.info("Unexpected behavior occurred");
             e.printStackTrace();
@@ -146,12 +146,16 @@ public class UserService {
     }
 
     //returns a JWT if success
-    public LoginSuccessResult login(UserLoginRequest userLoginRequest) throws LoginFailedException, InternalServerException, RecaptchaVerificationException {
-        logger.info("CHALLENGE TOKEN: " + userLoginRequest.getChallengeToken());
-        logger.info("RECAPTCHA SECRET: "+ recaptchaSecret);
-        boolean success = verifyRecaptchaChallenge(userLoginRequest.getChallengeToken());
-        if(!success){
-            throw new RecaptchaVerificationException("reCAPTCHA challenge failed");
+    //this method is also used in last step of signup process. That's why we have a switch.
+    //if it's signup process, then don't verify captcha because it'll already be done in the signup process
+    public LoginSuccessResult login(UserLoginRequest userLoginRequest, boolean isSignupProcess) throws LoginFailedException, InternalServerException, RecaptchaVerificationException {
+        if(!isSignupProcess) {
+            logger.info("CHALLENGE TOKEN: " + userLoginRequest.getChallengeToken());
+            logger.info("RECAPTCHA SECRET: " + recaptchaSecret);
+            boolean success = verifyRecaptchaChallenge(userLoginRequest.getChallengeToken());
+            if (!success) {
+                throw new RecaptchaVerificationException("reCAPTCHA challenge failed");
+            }
         }
         try {
             authenticationManager.authenticate(

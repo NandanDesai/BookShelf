@@ -67,7 +67,7 @@ public class UserController {
     @PostMapping("/login")
     @ResponseBody
     public ResponseEntity<Response> login(@Valid @RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) throws LoginFailedException, RecaptchaVerificationException, InternalServerException {
-        LoginSuccessResult loginSuccessResult = userService.login(userLoginRequest);
+        LoginSuccessResult loginSuccessResult = userService.login(userLoginRequest, false);
         String token = loginSuccessResult.getToken();
         Cookie cookie = new Cookie("token", token);
         cookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
