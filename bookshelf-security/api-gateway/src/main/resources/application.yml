@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: secure-server
+          uri: http://localhost:8001/secure
+          predicates:
+            - Path=/secure/**
+        - id: insecure-server
+          uri: http://localhost:8002/insecure
+          predicates:
+            - Path=/insecure/**
