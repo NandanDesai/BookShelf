@@ -29,7 +29,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/users")
-    public Response<List<UserDto>> getAll() {
+    public Response<List<UserDto>> getAll() throws InternalServerException {
         List<UserDto> userList = userService.getAllUsers();
         Response<List<UserDto>> response = new Response<>();
         response.setPayload(userList);
@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public Response<UserDto> getUser(@PathVariable("id") Integer id) throws ResourceNotFoundException {
+    public Response<UserDto> getUser(@PathVariable("id") Integer id) throws ResourceNotFoundException, InternalServerException {
         Response<UserDto> response = new Response<>();
         response.setPayload(userService.getUser(id));
         response.setType(ResponseType.SUCCESS);
@@ -53,21 +53,21 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Response<String> login(@Valid @RequestBody UserLoginRequest userLoginRequest) throws LoginFailedException {
+    public Response<String> login(@Valid @RequestBody UserLoginRequest userLoginRequest) throws LoginFailedException, InternalServerException {
         String token = userService.login(userLoginRequest);
         return new Response<String>().setPayload(token)
                 .setType(ResponseType.SUCCESS);
     }
 
     @PatchMapping("/users/pass")
-    public Response<String> updatePassword(@Valid @RequestBody UpdateUserPasswordRequest userPasswordRequest) throws ResourceNotFoundException, ValidationException {
+    public Response<String> updatePassword(@Valid @RequestBody UpdateUserPasswordRequest userPasswordRequest) throws ResourceNotFoundException, ValidationException, InternalServerException {
         userService.updatePassword(userPasswordRequest);
         return new Response<String>().setPayload("Password successfully updated.")
                 .setType(ResponseType.SUCCESS);
     }
 
     @PatchMapping("/users/role")
-    public Response<String> updateRole(@Valid @RequestBody UpdateUserRoleRequest userRoleRequest) throws ResourceNotFoundException, ValidationException {
+    public Response<String> updateRole(@Valid @RequestBody UpdateUserRoleRequest userRoleRequest) throws ResourceNotFoundException, ValidationException, InternalServerException {
         userService.updateRole(userRoleRequest);
         return new Response<String>().setPayload("Role successfully updated.")
                 .setType(ResponseType.SUCCESS);

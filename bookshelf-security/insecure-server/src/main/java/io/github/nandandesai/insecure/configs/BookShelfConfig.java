@@ -6,6 +6,7 @@ import io.github.nandandesai.insecure.models.User;
 import io.github.nandandesai.insecure.repositories.BookRepository;
 import io.github.nandandesai.insecure.repositories.RoleRepository;
 import io.github.nandandesai.insecure.repositories.UserRepository;
+import io.github.nandandesai.insecure.utils.SqlScriptRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
@@ -51,11 +56,22 @@ public class BookShelfConfig {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private Connection dbConnection;
+
     @EventListener(ApplicationReadyEvent.class)
-    public void createFileStorageDirectories() {
+    public void init() {
+
         String currentDirectory = System.getProperty("user.dir");
         String userDataRootPath = currentDirectory + File.separator + "userdata";
         try {
+            Resource initSqlScript = resourceLoader.getResource("classpath:init.sql");
+            System.out.println("Running the script.");
+            SqlScriptRunner sqlScriptRunner = new SqlScriptRunner(dbConnection);
+            Reader reader = new InputStreamReader(initSqlScript.getInputStream());
+            sqlScriptRunner.runScript(reader);
+            System.out.println("Script execution finished.");
+
             File userDataDir = new File(userDataRootPath);
             if (!userDataDir.isDirectory()) {
                 Path userDataPath = Paths.get(userDataRootPath);

@@ -12,9 +12,6 @@ import io.github.nandandesai.insecure.models.Role;
 import io.github.nandandesai.insecure.repositories.BookRepository;
 import io.github.nandandesai.insecure.repositories.RoleRepository;
 import io.github.nandandesai.insecure.utils.FileOperation;
-import org.apache.commons.imaging.ImageInfo;
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.Imaging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,12 +39,23 @@ public class BookService {
     @Autowired
     private UserDataPaths userDataPaths;
 
-    public List<BookDto> getAllBooks() {
-        return BookDto.getBookDtoListFromBooks(bookRepository.findAll());
+    public List<BookDto> getAllBooks() throws InternalServerException {
+        try {
+            return BookDto.getBookDtoListFromBooks(bookRepository.findAll());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InternalServerException(e.getMessage());
+        }
     }
 
-    public BookDto getBook(Integer id) throws ResourceNotFoundException {
-        Optional<Book> bookOptional = bookRepository.findById(id);
+    public BookDto getBook(Integer id) throws ResourceNotFoundException, InternalServerException {
+        Optional<Book> bookOptional = null;
+        try {
+            bookOptional = bookRepository.findById(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InternalServerException(e.getMessage());
+        }
         if(!bookOptional.isPresent()){
             throw new ResourceNotFoundException("book with id '"+id+"' not found");
         }
@@ -56,12 +65,21 @@ public class BookService {
 
     @PreAuthorize("hasAuthority('Admin')")
     public boolean deleteBook(Integer id) throws ResourceNotFoundException, InternalServerException {
-        Optional<Book> bookOptional = bookRepository.findById(id);
-        if(!bookOptional.isPresent()){
-            throw new ResourceNotFoundException("book with id '"+id+"' not found");
+        Optional<Book> bookOptional = null;
+        Book book = null;
+        try {
+            bookOptional = bookRepository.findById(id);
+
+            if(!bookOptional.isPresent()){
+                throw new ResourceNotFoundException("book with id '"+id+"' not found");
+            }
+            book = bookOptional.get();
+            bookRepository.delete(book);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InternalServerException(e.getMessage());
         }
-        Book book = bookOptional.get();
-        bookRepository.delete(book);
         try {
             FileOperation.deleteFile(userDataPaths.getBookPdfsPath(), book.getPdfFileName());
             FileOperation.deleteFile(userDataPaths.getBookCoversPath(), book.getCoverPhotoName());
@@ -72,8 +90,14 @@ public class BookService {
         }
     }
 
-    public List<BookDto> searchBook(String keyword){
-        List<Book> books = bookRepository.findByTitleIgnoreCaseContaining(keyword);
+    public List<BookDto> searchBook(String keyword) throws InternalServerException {
+        List<Book> books = null;
+        try {
+            books = bookRepository.findByTitleIgnoreCaseContaining(keyword);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InternalServerException(e.getMessage());
+        }
         return BookDto.getBookDtoListFromBooks(books);
     }
 
@@ -82,44 +106,54 @@ public class BookService {
         Book book = new Book();
         book.setTitle(addBookRequest.getTitle())
                 .setDescription(addBookRequest.getDesc());
-        Optional<Role> optionalRole = roleRepository.findById(addBookRequest.getRole());
-        if(!optionalRole.isPresent()){
-            throw new ResourceNotFoundException("role: "+ addBookRequest.getRole()+" not found");
-        }
-        book.setRole(optionalRole.get());
-        bookRepository.save(book);
-
-        MultipartFile pdfFile = addBookRequest.getPdfFile();
-        String pdfFileName = book.getId()+pdfFile.getOriginalFilename();
+        Optional<Role> optionalRole = null;
         try {
-            boolean result = FileOperation.writeFile(userDataPaths.getBookPdfsPath(), pdfFileName, pdfFile.getBytes());
-            if (!result) {
-                throw new InternalServerException("file with the name '" + pdfFileName + "' already exists");
+            optionalRole = roleRepository.findById(addBookRequest.getRole());
+            if(!optionalRole.isPresent()){
+                throw new ResourceNotFoundException("role: "+ addBookRequest.getRole()+" not found");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new InternalServerException(e.getMessage());
-        }
-        book.setPdfFileName(pdfFileName);
+            book.setRole(optionalRole.get());
+            bookRepository.save(book);
 
-        MultipartFile photo = addBookRequest.getPhoto();
-        String photoName = book.getId()+photo.getOriginalFilename();
-        try {
-            boolean result = FileOperation.writeFile(userDataPaths.getBookCoversPath(), photoName, photo.getBytes());
-            if (!result) {
-                throw new InternalServerException("file with the name '" + photoName + "' already exists");
+            MultipartFile pdfFile = addBookRequest.getPdfFile();
+            String pdfFileName = book.getId()+pdfFile.getOriginalFilename();
+            try {
+                boolean result = FileOperation.writeFile(userDataPaths.getBookPdfsPath(), pdfFileName, pdfFile.getBytes());
+                if (!result) {
+                    throw new InternalServerException("file with the name '" + pdfFileName + "' already exists");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new InternalServerException(e.getMessage());
             }
-        } catch (IOException e) {
+            book.setPdfFileName(pdfFileName);
+
+            MultipartFile photo = addBookRequest.getPhoto();
+            String photoName = book.getId()+photo.getOriginalFilename();
+            try {
+                boolean result = FileOperation.writeFile(userDataPaths.getBookCoversPath(), photoName, photo.getBytes());
+                if (!result) {
+                    throw new InternalServerException("file with the name '" + photoName + "' already exists");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new InternalServerException(e.getMessage());
+            }
+            book.setCoverPhotoName(photoName);
+            bookRepository.save(book);
+        } catch (SQLException e) {
             e.printStackTrace();
-            throw new InternalServerException(e.getMessage());
         }
-        book.setCoverPhotoName(photoName);
-        bookRepository.save(book);
         return BookDto.getBookDtoFromBook(book);
     }
 
     public Photo getCoverPhoto(Integer bookId) throws InternalServerException, ResourceNotFoundException {
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        Optional<Book> bookOptional = null;
+        try {
+            bookOptional = bookRepository.findById(bookId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         if(!bookOptional.isPresent()){
             throw new ResourceNotFoundException("book with ID: "+bookId+" not found");
         }
@@ -127,14 +161,17 @@ public class BookService {
         String photoName = book.getCoverPhotoName();
         try {
             byte[] bytes = FileOperation.readFile(userDataPaths.getBookCoversPath(), photoName);
-            ImageInfo imageInfo = Imaging.getImageInfo(bytes);
+
+            //need to determine the image type here and set the mime type accordingly
+            //temporarily setting the mime type to image/jpg
+
             return new Photo().setPhotoBytes(bytes)
-                    .setMimeType(imageInfo.getMimeType());
+                    .setMimeType("image/jpg");
         } catch (NoSuchFileException e) {
             String message = "No photo with the name '" + photoName + "' found";
             logger.error(message);
             throw new ResourceNotFoundException(message);
-        } catch (IOException | ImageReadException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             throw new InternalServerException(e.getMessage());
         }
@@ -144,7 +181,13 @@ public class BookService {
     //otherwise ResourceNotFoundException don't get caught when thrown from BookPdfAccessCheck class.
     @PostAuthorize("@bookPdfAccessCheck.verify(#bookId, authentication.principal.grantedAuthorities[0].userId)")
     public PDF getPdf(Integer bookId) throws ResourceNotFoundException, InternalServerException {
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        Optional<Book> bookOptional = null;
+        try {
+            bookOptional = bookRepository.findById(bookId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InternalServerException(e.getMessage());
+        }
         if(!bookOptional.isPresent()){
             throw new ResourceNotFoundException("book with ID: "+bookId+" not found");
         }

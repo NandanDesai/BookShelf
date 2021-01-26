@@ -30,7 +30,7 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping("/books")
-    public Response<List<BookDto>> getAllBooks() {
+    public Response<List<BookDto>> getAllBooks() throws InternalServerException {
         List<BookDto> bookList = bookService.getAllBooks();
         Response<List<BookDto>> response = new Response<>();
         response.setPayload(bookList);
@@ -39,7 +39,7 @@ public class BookController {
     }
 
     @GetMapping("/books/{id}")
-    public Response<BookDto> getBook(@PathVariable("id") Integer id) throws ResourceNotFoundException {
+    public Response<BookDto> getBook(@PathVariable("id") Integer id) throws ResourceNotFoundException, InternalServerException {
         Response<BookDto> response = new Response<>();
         response.setPayload(bookService.getBook(id));
         response.setType(ResponseType.SUCCESS);
@@ -47,7 +47,7 @@ public class BookController {
     }
 
     @GetMapping("/books/search")
-    public Response<List<BookDto>> searchBooks(@RequestParam("q") String query) {
+    public Response<List<BookDto>> searchBooks(@RequestParam("q") String query) throws InternalServerException {
         List<BookDto> bookDtoList = bookService.searchBook(query);
         return new Response<List<BookDto>>().setPayload(bookDtoList)
                 .setType(ResponseType.SUCCESS);

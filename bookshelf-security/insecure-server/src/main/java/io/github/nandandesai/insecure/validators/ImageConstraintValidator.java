@@ -1,8 +1,5 @@
 package io.github.nandandesai.insecure.validators;
 
-import org.apache.commons.imaging.ImageInfo;
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.Imaging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,18 +13,15 @@ public class ImageConstraintValidator implements ConstraintValidator<ValidImage,
 
     @Override
     public boolean isValid(MultipartFile image, ConstraintValidatorContext context) {
-        try {
-            ImageInfo imageInfo = Imaging.getImageInfo(image.getBytes());
-            logger.info("Image format: " + imageInfo.getFormat().getName());
-            logger.info("Image height: " + imageInfo.getHeight());
-            logger.info("Image width: " + imageInfo.getWidth());
-            //maybe validate height and width here
-        } catch (ImageReadException | IOException e) {
-            context.buildConstraintViolationWithTemplate("File is not an image")
-                    .addConstraintViolation()
-                    .disableDefaultConstraintViolation();
-            return false;
-        }
+//        try {
+//
+//            //maybe validate height and width here
+//        } catch (IOException e) {
+//            context.buildConstraintViolationWithTemplate("File is not an image")
+//                    .addConstraintViolation()
+//                    .disableDefaultConstraintViolation();
+//            return false;
+//        }
         return true;
     }
 }

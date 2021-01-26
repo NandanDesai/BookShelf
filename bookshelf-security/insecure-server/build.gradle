@@ -25,6 +25,15 @@ dependencies {
 	//for http request validation, like @ValidEmail, @NotNull etc in DTOs
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.3.4.RELEASE'
 
+	//spring security
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.4.0'
+
+	//for generating and validating jwts
+	implementation 'com.auth0:java-jwt:3.11.0'
+
+	// had a dependency error while building the JAR. This dependency is to solve that
+	implementation group: 'javax.activation', name: 'activation', version: '1.1.1'
+
 	// for @Getter, @Setter etc. annotations
 	compileOnly 'org.projectlombok:lombok:1.18.16'
 	annotationProcessor 'org.projectlombok:lombok:1.18.16'
