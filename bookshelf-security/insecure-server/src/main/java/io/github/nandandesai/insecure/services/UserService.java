@@ -1,6 +1,7 @@
 package io.github.nandandesai.insecure.services;
 
 import io.github.nandandesai.insecure.configs.UserDataPaths;
+import io.github.nandandesai.insecure.dto.LoginSuccessResult;
 import io.github.nandandesai.insecure.dto.Photo;
 import io.github.nandandesai.insecure.dto.UserDto;
 import io.github.nandandesai.insecure.dto.requests.*;
@@ -85,7 +86,7 @@ public class UserService {
     }
 
     //returns jwt if success
-    public String addUser(UserSignUpRequest userSignUpRequest) throws InternalServerException, DuplicateEntityException {
+    public LoginSuccessResult addUser(UserSignUpRequest userSignUpRequest) throws InternalServerException, DuplicateEntityException {
         Optional<User> optionalUser = null;
         try {
             optionalUser = userRepository.findByEmail(userSignUpRequest.getEmail());
@@ -125,7 +126,7 @@ public class UserService {
     }
 
     //returns a JWT if success
-    public String login(UserLoginRequest userLoginRequest) throws LoginFailedException, InternalServerException {
+    public LoginSuccessResult login(UserLoginRequest userLoginRequest) throws LoginFailedException, InternalServerException {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userLoginRequest.getEmail(), userLoginRequest.getPassword()));
@@ -152,7 +153,8 @@ public class UserService {
         }
 
         //create and return the token
-        return jwtService.createToken(userId, email, role);
+        String token = jwtService.createToken(userId, email, role);
+        return new LoginSuccessResult().setToken(token).setUserDto(UserDto.getUserDtoFromUser(user));
     }
 
     @PreAuthorize("#userPasswordRequest.id == authentication.principal.grantedAuthorities[0].userId")

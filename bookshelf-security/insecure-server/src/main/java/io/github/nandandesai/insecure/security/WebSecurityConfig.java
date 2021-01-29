@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,25 +18,31 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private AuthorizationFilter authorizationFilter;
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserSecurityDetailsService userSecurityDetailsService;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/*","/assets/*","/actuator/**","/insecure/login","/insecure/signup");
+    }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().disable()
                 .csrf().disable()
-                .authorizeRequests().antMatchers("/*","/assets/*","/secure/login","/secure/signup").permitAll()
+                .authorizeRequests()
+                //.antMatchers("/*","/assets/*","/actuator/**","/secure/login","/secure/signup").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        httpSecurity.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(new AuthorizationFilter(userSecurityDetailsService, jwtService), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -53,24 +60,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-//    .antMatchers("/",
-//                         "/favicon.ico",
-//                         "/**/*.json",
-//                         "/**/*.xml",
-//                         "/**/*.properties",
-//                         "/**/*.woff2",
-//                         "/**/*.woff",
-//                         "/**/*.ttf",
-//                         "/**/*.ttc",
-//                         "/**/*.ico",
-//                         "/**/*.bmp",
-//                         "/**/*.png",
-//                         "/**/*.gif",
-//                         "/**/*.svg",
-//                         "/**/*.jpg",
-//                         "/**/*.jpeg",
-//                         "/**/*.html",
-//                         "/**/*.css",
-//                         "/**/*.js").permitAll()
 }

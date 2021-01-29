@@ -1,5 +1,6 @@
 package io.github.nandandesai.insecure.controllers;
 
+import io.github.nandandesai.insecure.dto.LoginSuccessResult;
 import io.github.nandandesai.insecure.dto.Photo;
 import io.github.nandandesai.insecure.dto.UserDto;
 import io.github.nandandesai.insecure.dto.requests.*;
@@ -10,12 +11,11 @@ import io.github.nandandesai.insecure.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -46,17 +46,38 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public Response<String> signUp(@Valid @RequestBody UserSignUpRequest userSignUpRequest) throws InternalServerException, DuplicateEntityException {
-        String token = userService.addUser(userSignUpRequest);
-        return new Response<String>().setPayload(token)
+    @ResponseBody
+    public ResponseEntity<Response> signUp(@Valid @RequestBody UserSignUpRequest userSignUpRequest, HttpServletResponse response) throws InternalServerException, DuplicateEntityException {
+        LoginSuccessResult loginSuccessResult = userService.addUser(userSignUpRequest);
+        String token = loginSuccessResult.getToken();
+        Cookie cookie = new Cookie("token", token);
+        cookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
+        //cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/insecure"); // this setting will ask the browser to send this cookie with every url path
+        response.addCookie(cookie);
+        Response<UserDto> res = new Response<UserDto>().setPayload(loginSuccessResult.getUserDto())
                 .setType(ResponseType.SUCCESS);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public Response<String> login(@Valid @RequestBody UserLoginRequest userLoginRequest) throws LoginFailedException, InternalServerException {
-        String token = userService.login(userLoginRequest);
-        return new Response<String>().setPayload(token)
+    @ResponseBody
+    public ResponseEntity<Response> login(@Valid @RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) throws LoginFailedException, InternalServerException {
+        logger.info("username: "+userLoginRequest.getEmail()+", password: "+userLoginRequest.getPassword());
+        LoginSuccessResult loginSuccessResult = userService.login(userLoginRequest);
+        String token = loginSuccessResult.getToken();
+        ResponseCookie cookie = ResponseCookie.from("token", token)
+                .maxAge(7 * 24 * 60 * 60)
+                //.sameSite("None")
+                .httpOnly(true)
+                //.secure(true)
+                .path("/insecure")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        Response<UserDto> res = new Response<UserDto>().setPayload(loginSuccessResult.getUserDto())
                 .setType(ResponseType.SUCCESS);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @PatchMapping("/users/pass")
