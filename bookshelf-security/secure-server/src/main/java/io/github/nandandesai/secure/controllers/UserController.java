@@ -55,7 +55,7 @@ public class UserController {
         String token = loginSuccessResult.getToken();
         Cookie cookie = new Cookie("token", token);
         cookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
-        cookie.setSecure(true);
+        //cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/secure"); // this setting will ask the browser to send this cookie with every url path
         response.addCookie(cookie);
@@ -71,7 +71,7 @@ public class UserController {
         String token = loginSuccessResult.getToken();
         Cookie cookie = new Cookie("token", token);
         cookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
-        cookie.setSecure(true);
+        //cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/secure"); // this setting will ask the browser to send this cookie with every url path
         response.addCookie(cookie);
