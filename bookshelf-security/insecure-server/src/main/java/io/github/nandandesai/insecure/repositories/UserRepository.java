@@ -46,6 +46,7 @@ public class UserRepository {
             }
             logger.info("User successfully created with ID: " + user.getId());
         }
+        con.commit();
     }
 
     public Optional<User> findById(Integer id) throws SQLException {

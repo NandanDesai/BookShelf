@@ -87,8 +87,11 @@ public class UserController {
                 .setType(ResponseType.SUCCESS);
     }
 
-    @PatchMapping("/users/role")
-    public Response<String> updateRole(@Valid @RequestBody UpdateUserRoleRequest userRoleRequest) throws ResourceNotFoundException, ValidationException, InternalServerException {
+    @GetMapping("/users/role")
+    public Response<String> updateRole(@RequestParam("id") Integer id, @RequestParam("role") String role) throws ResourceNotFoundException, ValidationException, InternalServerException {
+        UpdateUserRoleRequest userRoleRequest = new UpdateUserRoleRequest();
+        userRoleRequest.setRole(role);
+        userRoleRequest.setId(id);
         userService.updateRole(userRoleRequest);
         return new Response<String>().setPayload("Role successfully updated.")
                 .setType(ResponseType.SUCCESS);

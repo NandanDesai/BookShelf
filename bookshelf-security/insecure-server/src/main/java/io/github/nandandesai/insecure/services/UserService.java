@@ -27,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.sql.SQLException;
@@ -180,7 +181,7 @@ public class UserService {
     }
 
     @PreAuthorize("hasAuthority('Admin') and #userRoleRequest.id != authentication.principal.grantedAuthorities[0].userId")
-    public void updateRole(UpdateUserRoleRequest userRoleRequest) throws ResourceNotFoundException, InternalServerException {
+    public void updateRole(@Valid UpdateUserRoleRequest userRoleRequest) throws ResourceNotFoundException, InternalServerException {
         Optional<User> userOptional = null;
         try {
             userOptional = userRepository.findById(userRoleRequest.getId());

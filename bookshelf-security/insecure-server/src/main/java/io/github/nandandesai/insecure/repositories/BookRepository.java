@@ -47,6 +47,7 @@ public class BookRepository {
             }
             logger.info("Book successfully inserted with ID: "+book.getId());
         }
+        con.commit();
     }
 
     public Optional<Book> findById(Integer id) throws SQLException {
@@ -106,5 +107,6 @@ public class BookRepository {
         String sql = String.format("DELETE FROM books WHERE id=%d", book.getId());
         logger.info("Executing SQL statement: "+sql);
         con.createStatement().execute(sql);
+        con.commit();
     }
 }
