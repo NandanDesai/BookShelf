@@ -54,18 +54,11 @@ export class PDFViewerComponent implements OnInit, AfterViewInit {
 
 
     let userRole = '';
-    if (this.globalVars.getApiUrl() === '/secure'){
-      userRole = this.tokenStore.getUser().role;
-      this.pdfSrc = {
-        url: this.globalVars.getApiUrl() + '/books/pdf/' + this.book.id
-      };
-    }else{
-      userRole = this.tokenStore.getPayload().role;
-      this.pdfSrc = {
-        url: this.globalVars.getApiUrl() + '/books/pdf/' + this.book.id,
-        httpHeaders: {Authorization: `Bearer ${this.tokenStore.getToken()}`}
-      };
-    }
+    userRole = this.tokenStore.getUser().role;
+    this.pdfSrc = {
+      url: this.globalVars.getApiUrl() + '/books/pdf/' + this.book.id
+    };
+
     const bookRole = this.book.role;
 
     if (this.roleValue[userRole] >= this.roleValue[bookRole]) {

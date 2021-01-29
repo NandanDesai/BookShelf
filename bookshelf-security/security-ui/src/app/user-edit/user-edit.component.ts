@@ -49,11 +49,7 @@ export class UserPhotoUploadComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.globalVars.getApiUrl() === '/secure') {
-      this.userId = this.storageService.getUser().id;
-    }else{
-      this.userId = this.storageService.getPayload().userId;
-    }
+    this.userId = this.storageService.getUser().id;
     this.userPhotoUrl = this.globalVars.getApiUrl() + '/users/photo/' + this.userId;
   }
 

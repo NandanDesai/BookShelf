@@ -12,18 +12,9 @@ export class RoleGuard implements CanActivate {
               private storageService: StorageService,
               private globalVars: GlobalVars) {}
   canActivate(): boolean {
-    if (this.globalVars.getApiUrl() === '/secure'){
-      if (this.storageService.getUser().role === 'Admin'){
-        console.log('role guard returning true');
-        return true;
-      }
-    }else {
-      if (this.storageService.getToken() != null) {
-        if (this.storageService.getPayload().role === 'Admin') {
-          console.log('role guard returning true');
-          return true;
-        }
-      }
+    if (this.storageService.getUser().role === 'Admin'){
+      console.log('role guard returning true');
+      return true;
     }
     console.log('role guard returning false');
     this.router.navigate(['dash']);

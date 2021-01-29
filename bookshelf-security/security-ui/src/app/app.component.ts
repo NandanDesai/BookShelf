@@ -127,22 +127,10 @@ export class AppComponent implements OnInit {
       this.showToggle = false;
       this.showMenu = true;
 
-      if (this.globalVars.getApiUrl() === '/secure'){
-        const user: User = this.storageService.getUser();
-        this.role = user.role;
-        this.userId = user.id;
-        this.userPhotoUrl = this.globalVars.getApiUrl() + '/users/photo/' + this.userId;
-      }else {
-        // if the route is not /login or /signup or /, then load the user role and id from jwt token payload
-        // this will be used to set the Role name and Profile Pic on the UI toolbar
-        const tokenPayload: TokenPayload = this.storageService.getPayload();
-        if (tokenPayload) {
-          this.role = tokenPayload.role;
-          this.userId = tokenPayload.userId;
-          this.userPhotoUrl =
-            this.globalVars.getApiUrl() + '/users/photo/' + this.userId;
-        }
-      }
+      const user: User = this.storageService.getUser();
+      this.role = user.role;
+      this.userId = user.id;
+      this.userPhotoUrl = this.globalVars.getApiUrl() + '/users/photo/' + this.userId;
     }
   }
 

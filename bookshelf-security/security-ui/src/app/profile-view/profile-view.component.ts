@@ -28,26 +28,10 @@ export class ProfileViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoadingService.add();
-    if (this.globalVars.getApiUrl() === '/secure'){
-      this.user = this.storageService.getUser();
-      this.isLoadingService.remove();
-      this.userPhotoUrl =
-        this.globalVars.getApiUrl() + '/users/photo/' + this.user.id;
-    }else {
-      this.userService.getUser(this.storageService.getPayload().userId).subscribe(
-        data => {
-          this.user = data.payload;
-          this.isLoadingService.remove();
-          this.userPhotoUrl =
-            this.globalVars.getApiUrl() + '/users/photo/' + this.user.id;
-        },
-        err => {
-          console.log(err);
-          this.notifier.notify('error', 'Failed to load your profile info');
-          this.isLoadingService.remove();
-        }
-      );
-    }
+    this.user = this.storageService.getUser();
+    this.isLoadingService.remove();
+    this.userPhotoUrl =
+      this.globalVars.getApiUrl() + '/users/photo/' + this.user.id;
   }
 
   editButtonCLicked(): void {

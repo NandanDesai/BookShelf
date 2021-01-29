@@ -17,11 +17,8 @@ export class AuthImagePipe implements PipeTransform {
   }
 
   async transform(src: string): Promise<SafeUrl> {
-    let headers = null;
-    if (this.globalVars.getApiUrl() !== '/secure') {
-      const token = this.storageService.getToken();
-      headers = new HttpHeaders({Authorization: `Bearer ${token}`});
-    }
+    const token = this.storageService.getToken();
+    const headers = new HttpHeaders({Authorization: `Bearer ${token}`});
     try {
       let imageBlob = null;
       if (headers != null) {

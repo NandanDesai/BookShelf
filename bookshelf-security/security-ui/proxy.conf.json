@@ -1,11 +1,11 @@
 {
     "/secure/*": {
-        "target": "http://localhost:8080",
+        "target": "http://localhost:8001",
         "secure": false,
         "logLevel": "debug"
     },
     "/insecure/*": {
-      "target": "http://localhost:8080",
+      "target": "http://localhost:8002",
       "secure": false,
       "logLevel": "debug"
     },
