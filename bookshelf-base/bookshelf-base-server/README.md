@@ -42,7 +42,7 @@ This directory contains all the resource files for BookShelf application. We hav
 
 ## Libraries Used
 
-Please refer [build.gradle](/build.gradle) file. Dependencies and their purpose are well-defined there.
+Please refer [build.gradle](https://github.com/NandanDesai/BookShelf/blob/master/bookshelf-base/bookshelf-base-server/build.gradle) file. Dependencies and their purpose are well-defined there.
 
 ## Build the JAR
 
