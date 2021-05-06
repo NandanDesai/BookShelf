@@ -34,7 +34,7 @@ dependencies {
 	//spring security
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.4.0'
 
-    //generating and validating JWTs
+	//generating and validating JWTs
 	implementation 'com.auth0:java-jwt:3.11.0'
 
 	// for @Getter, @Setter etc. annotations
