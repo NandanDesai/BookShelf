@@ -64,7 +64,12 @@ You can find the entire list in `package.json`. But the prominent ones are:
  - [ng2-pdf-viewer](https://github.com/VadimDez/ng2-pdf-viewer): For rendering PDF files.
  - [jwt-decode](https://github.com/auth0/jwt-decode): For decoding JWTs.
 
-Here is a demo of the UI with a complete flow from Login to Logout:
+
+## Demo
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/XyzX828dDBU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+Here is a GIF for you if you don't have time to watch that video:
 
 ![demo](https://raw.githubusercontent.com/NandanDesai/res/master/bookshelf-base-working.gif)
 
