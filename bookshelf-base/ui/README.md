@@ -67,7 +67,7 @@ You can find the entire list in `package.json`. But the prominent ones are:
 
 ## Demo
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/XyzX828dDBU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Here is a video demo and a walkthrough for BookShelf Base UI!](https://youtu.be/XyzX828dDBU)
 
 Here is a GIF for you if you don't have time to watch that video:
 
