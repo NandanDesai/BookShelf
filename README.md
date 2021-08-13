@@ -1,10 +1,12 @@
 # BookShelf
 
+(This project is still under development)
+
 ### Introduction
 
-This repository contains a sample use case (called 'BookShelf') that I created to demonstrate various concepts about Security and Cloud.
+This repository contains a sample use case (called 'BookShelf') that I created to demonstrate various concepts in Security and Cloud.
 
-### Description
+### Description of the Use Case
 
 - BookShelf is a web application that allows users to read books online. A person can create an account (Signup) or login using an existing account. 
 - Each user of the application has a role assigned to them.
@@ -24,8 +26,3 @@ There are 3 versions of BookShelf: (<< make the below titles as hyperlinks to th
  1. BookShelf Base
  2. BookShelf Security
  3. BookShelf Cloud
-
-
-
-
-	

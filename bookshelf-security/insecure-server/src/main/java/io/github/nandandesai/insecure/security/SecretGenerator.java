@@ -19,15 +19,9 @@ class SecretGenerator {
     @Autowired
     private UserDataPaths userDataPaths;
 
-    private String generateRandomString(int len) {
-        final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+";
-        SecureRandom random = new SecureRandom();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < len; i++) {
-            int randomIndex = random.nextInt(chars.length());
-            sb.append(chars.charAt(randomIndex));
-        }
-        return sb.toString();
+    private String generateSecret() {
+        //hardcoded jwt secret
+        return "mysecret";
     }
 
     String getServerSecret() {
@@ -37,7 +31,7 @@ class SecretGenerator {
             return secret;
         }catch (IOException e){
             logger.info(SERVER_SECRET_FILENAME+" file doesn't exists or something went wrong in reading that file. Generating a new secret for the server.");
-            String newSecret = generateRandomString(32);
+            String newSecret = generateSecret();
             try {
                 FileOperation.writeFile(userDataPaths.getCurrentJarPath(), SERVER_SECRET_FILENAME, newSecret.getBytes());
             } catch (IOException ex) {
