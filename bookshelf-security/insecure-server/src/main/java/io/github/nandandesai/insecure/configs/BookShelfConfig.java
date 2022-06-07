@@ -45,6 +45,9 @@ public class BookShelfConfig {
     private ResourceLoader resourceLoader;
 
     @Autowired
+    private UserDataPaths userDataPaths;
+
+    @Autowired
     private BookRepository bookRepository;
 
     @Autowired
@@ -106,7 +109,6 @@ public class BookShelfConfig {
                 Resource defaultAvatar=resourceLoader.getResource(initResourcesPrefix+"default-avatar.png");
 
 
-                UserDataPaths userDataPaths = getUserDataPaths();
                 Files.copy(pdf1.getInputStream(), Paths.get(userDataPaths.getBookPdfsPath()+pdf1.getFilename()), StandardCopyOption.REPLACE_EXISTING);
                 Files.copy(pdf2.getInputStream(), Paths.get(userDataPaths.getBookPdfsPath()+pdf2.getFilename()), StandardCopyOption.REPLACE_EXISTING);
                 Files.copy(cover1.getInputStream(), Paths.get(userDataPaths.getBookCoversPath()+cover1.getFilename()), StandardCopyOption.REPLACE_EXISTING);
@@ -178,20 +180,5 @@ public class BookShelfConfig {
             });
             System.exit(exitCode);
         }
-    }
-
-    @Bean
-    public UserDataPaths getUserDataPaths() {
-        String currentDirectory = System.getProperty("user.dir");
-        String userDataRootPath = currentDirectory + File.separator + "userdata";
-        String userPhotoDir = userDataRootPath + File.separator + "userphotos" + File.separator;
-        String booksDir = userDataRootPath + File.separator + "books";
-        String bookCoversDir = booksDir + File.separator + "covers" + File.separator;
-        String bookPdfsDir = booksDir + File.separator + "pdfs" + File.separator;
-        return new UserDataPaths()
-                .setUserPhotoDirPath(userPhotoDir)
-                .setBookCoversPath(bookCoversDir)
-                .setBookPdfsPath(bookPdfsDir)
-                .setCurrentJarPath(currentDirectory + File.separator);
     }
 }
