@@ -22,8 +22,10 @@ cd ../secure-server-monitoring
 mkdir ../output
 cd ..
 cp ./api-gateway/build/libs/* output
-cp ./insecure-server/build/libs/* output
-cp ./secure-server/build/libs/* output
-cp ./secure-server-monitoring/build/libs/* output
+mkdir output/insecure
+cp ./insecure-server/build/libs/* output/insecure
+mkdir output/secure
+cp ./secure-server/build/libs/* output/secure
+cp ./secure-server-monitoring/build/libs/* output/secure
 echo "build script completed."
 
