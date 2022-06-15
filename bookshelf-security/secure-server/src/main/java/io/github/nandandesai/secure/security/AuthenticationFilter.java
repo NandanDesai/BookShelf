@@ -1,9 +1,9 @@
-package io.github.nandandesai.insecure.security;
+package io.github.nandandesai.secure.security;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.nandandesai.insecure.security.models.JwtUserInfo;
-import io.github.nandandesai.insecure.security.models.UserSecurityDetails;
+import io.github.nandandesai.secure.security.models.JwtUserInfo;
+import io.github.nandandesai.secure.security.models.UserSecurityDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -15,13 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class AuthorizationFilter extends OncePerRequestFilter {
+public class AuthenticationFilter extends OncePerRequestFilter {
 
     private UserSecurityDetailsService userSecurityDetailsService;
 
     private JwtService jwtService;
 
-    public AuthorizationFilter(UserSecurityDetailsService userSecurityDetailsService, JwtService jwtService){
+    public AuthenticationFilter(UserSecurityDetailsService userSecurityDetailsService, JwtService jwtService){
         this.jwtService = jwtService;
         this.userSecurityDetailsService=userSecurityDetailsService;
     }
@@ -66,7 +66,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         }
         if (jwtUserInfo != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService
-                    .loadUserByUsername(jwtUserInfo.getEmail());
+                                                        .loadUserByUsername(jwtUserInfo.getEmail());
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                     userSecurityDetails, token, userSecurityDetails.getAuthorities());
             usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

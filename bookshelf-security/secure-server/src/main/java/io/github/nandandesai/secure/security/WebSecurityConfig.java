@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        httpSecurity.addFilterBefore(new AuthorizationFilter(userSecurityDetailsService, jwtService), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(new AuthenticationFilter(userSecurityDetailsService, jwtService), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
