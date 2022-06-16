@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private AuthenticationFilter authenticationFilter;
+    private ReauthenticationFilter reauthenticationFilter;
 
     @Autowired
     private UserSecurityDetailsService userSecurityDetailsService;
@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        httpSecurity.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(reauthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

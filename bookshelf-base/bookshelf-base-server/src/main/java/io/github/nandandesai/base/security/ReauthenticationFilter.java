@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class AuthenticationFilter extends OncePerRequestFilter {
+public class ReauthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserSecurityDetailsService userSecurityDetailsService;
