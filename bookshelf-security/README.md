@@ -1,17 +1,19 @@
 # BookShelf Security
 
-This project is built to demonstrate various Cyber Security concepts.
+This project is built to demonstrate various Cyber Security concepts. 
+
+![BookShelf Security](https://raw.githubusercontent.com/NandanDesai/res/master/bookshelf-security-gif.gif)
 
 ## Project Structure
+ 
+ BookShelf Security is made up of five sub-projects, namely:
+ 
 
-BookShelf Security is made up of five sub-projects, namely:
-
-
-1. **insecure-server**: Contains insecure code and a set of vulnerabilities for us to exploit. This project is built on top of [BookShelf Base Server](https://github.com/NandanDesai/BookShelf/tree/master/bookshelf-base/bookshelf-base-server).
-2. **secure-server**: Contains secure code and patches the vulnerabilities that are present in the *insecure-server*. This project is built on top of [BookShelf Base Server](https://github.com/NandanDesai/BookShelf/tree/master/bookshelf-base/bookshelf-base-server).
-3. **security-ui**: A common UI for both the *secure-server* and the *insecure server*. This project is built on top of [BookShelf Base UI](https://github.com/NandanDesai/BookShelf/tree/master/bookshelf-base/ui).
-4. **secure-server-monitoring**: This project monitors the *secure-server*. This project uses [Spring Boot Admin project by codecentric](https://github.com/codecentric/spring-boot-admin).
-5. **api-gateway**: This project is a gateway that will redirect the user to either *secure-server* or *insecure-server* based on the API endpoint that the user is accessing. This project uses [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) library.
+ 1. **insecure-server**: Contains insecure code and a set of vulnerabilities for us to exploit. This project is built on top of [BookShelf Base Server](https://github.com/NandanDesai/BookShelf/tree/master/bookshelf-base/bookshelf-base-server).
+ 2. **secure-server**: Contains secure code and patches the vulnerabilities that are present in the *insecure-server*. This project is built on top of [BookShelf Base Server](https://github.com/NandanDesai/BookShelf/tree/master/bookshelf-base/bookshelf-base-server).
+ 3. **security-ui**: A common UI for both the *secure-server* and the *insecure server*. This project is built on top of [BookShelf Base UI](https://github.com/NandanDesai/BookShelf/tree/master/bookshelf-base/ui).
+ 4. **secure-server-monitoring**: This project monitors the *secure-server*. This project uses [Spring Boot Admin project by codecentric](https://github.com/codecentric/spring-boot-admin).
+ 5. **api-gateway**: This project is a gateway that will redirect the user to either *secure-server* or *insecure-server* based on the API endpoint that the user is accessing. This project uses [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) library.
 
 The arrangement and functioning of all the above projects is shown below:
 
@@ -21,9 +23,9 @@ The *secure* and *insecure* projects are two independent servers with their own 
 
 ## How to use
 
-To build the JAR files, run `build.sh` file. All the JAR files will be available in a newly-created *output* directory after this script completes.
+To build the JAR files, run `build.sh` file. All the JAR files will be available in a newly-created *output* directory after this script completes. 
 
-In order to run all the files, execute `run.sh`. The UI will be served by *api-gateway* at http://localhost:8080.
+In order to run all the files, execute `run.sh`. The UI will be served by *api-gateway* at http://localhost:8080. 
 
 *secure-server* will be running at http://localhost:8001/
 
@@ -45,7 +47,7 @@ In this project, we've used Spring Security library that helps us with building 
 
 The first step of any *protected* application is authentication. This involves a user logging in usually with a username and a password. Let's try to understand how a Login functionality can be achieved with Spring Security.
 
-`SecurityContextHolder` class is the foundation for Spring Security. The authentication and authorization basically revolves around this class. That is because, this class is supposed to contain all the information about a user, if that user is authenticated, what authorization does this user have etc.
+`SecurityContextHolder` class is the foundation for Spring Security. The authentication and authorization basically revolves around this class. That is because, this class is supposed to contain all the information about a user, if that user is authenticated, what authorization does this user have etc. 
 
 `SecurityContextHolder` class contains `SecurityContext` (it's an *Interface*) and `SecurityContext` contains `Authentication` object.
 
@@ -54,7 +56,7 @@ The  `Authentication`  object contains:
 -   `credentials`  - often a password.
 -   `authorities`  - the  `GrantedAuthority` for the user. These are usually the roles assigned to the user.
 
-We can access this `SecurityContextHolder`, `SecurityContext` and `Authentication` hierarchy like this:
+We can access this `SecurityContextHolder`, `SecurityContext` and `Authentication` hierarchy like this: 
 
 ```java
 SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -91,19 +93,19 @@ public class UserSecurityDetailsService implements UserDetailsService {
 }
 ```
 
-In the `authenticate()` method of `AuthenticationManager` class, the code: `userDetailsService.loadUserByUsername()` is used and that's how it'll get to execute our logic to retrieve user details from the database.
+In the `authenticate()` method of `AuthenticationManager` class, the code: `userDetailsService.loadUserByUsername()` is used and that's how it'll get to execute our logic to retrieve user details from the database. 
 
-So, the authentication process goes like this:
+So, the authentication process goes like this: 
 
----> `authenticationManager.authenticate(request)`
+---> `authenticationManager.authenticate(request)` 
 
----> `userDetailsService.loadUserByUsername()`
+---> `userDetailsService.loadUserByUsername()` 
 
----> (retrieve the user details using the logic we provided)
+---> (retrieve the user details using the logic we provided) 
 
----> (verify whether the details from the database match with the credentials provided by the client)
+---> (verify whether the details from the database match with the credentials provided by the client) 
 
----> (if yes, then authentication is complete)
+---> (if yes, then authentication is complete) 
 
 ---> (otherwise, raise `BadCredentialsException` exception)
 
@@ -115,7 +117,7 @@ You must have noticed that we've set the Authentication object as follows after 
 SecurityContextHolder.getContext().setAuthentication(result); //'result' is an instance of Authentication class.
 ```
 
-Setting the *successful* Authentication object into the `SecurityContext` is important because this Authentication object will be referred during the authorization of this logged-in user.
+Setting the *successful* Authentication object into the `SecurityContext` is important because this Authentication object will be referred during the authorization of this logged-in user. 
 
 ### Authorization / Access Control
 
@@ -154,9 +156,9 @@ One last thing we haven't covered here is, how will our application *identify* t
 
 ### Stateful and Stateless Authentication
 
-Stateful Authentication involves maintaining the user information (it's called a *session*) on the server after successful authentication and handing over an ID (called "JSESSIONID") to the client (the browser) in the form of a browser cookie. And for the subsequent requests, the client just needs to send this ID every time and the associated user information will be retrieved on the server for Authorization.
+Stateful Authentication involves maintaining the user information (it's called a *session*) on the server after successful authentication and handing over an ID (called "JSESSIONID") to the client (the browser) in the form of a browser cookie. And for the subsequent requests, the client just needs to send this ID every time and the associated user information will be retrieved on the server for Authorization.   
 
-Stateless Authentication is where the the server sends a token (commonly the Json Web Tokens (JWTs)) to the client after successful authentication. This token is cryptographically signed and it contains all the necessary information about the user (like username, user's role, other IDs etc.). The server doesn't store anywhere that this user has been authenticated (hence it's "stateless"). For the subsequent requests, the client will send this token to the server and the server will "re-authenticate" the user by reading this token and determining the user's role and other information from it and thus deciding what the user is allowed to do.
+Stateless Authentication is where the the server sends a token (commonly the Json Web Tokens (JWTs)) to the client after successful authentication. This token is cryptographically signed and it contains all the necessary information about the user (like username, user's role, other IDs etc.). The server doesn't store anywhere that this user has been authenticated (hence it's "stateless"). For the subsequent requests, the client will send this token to the server and the server will "re-authenticate" the user by reading this token and determining the user's role and other information from it and thus deciding what the user is allowed to do. 
 
 ### Pros and Cons of Stateful and Stateless Authentication mechanisms
 
@@ -176,7 +178,7 @@ The idea is to intercept the HTTP requests to check for the cookie that the clie
 
 The basics of Spring Boot Filters is explained very well in this article: https://docs.spring.io/spring-security/reference/servlet/architecture.html
 
-Spring Security's web-related tasks are mainly implemented using Servlet Filters described in the aforementioned article link.
+Spring Security's web-related tasks are mainly implemented using Servlet Filters described in the aforementioned article link.  
 
 The `FilterChainProxy` class of Spring Security keeps a list of all the `SecurityFilterChain`s. Each HTTP request has a list of Security Filters associated with it (and this list is configurable) and these are stored in separate `SecurityFilterChain` instances. And depending upon the HTTP request, the associated `SecurityFilterChain` is executed by the `FilterChainProxy`.
 
@@ -188,9 +190,9 @@ public void configure(WebSecurity web) throws Exception {
 	web.ignoring().antMatchers("/*","/assets/*","/actuator/**","/secure/login","/secure/signup");
 }
 ```
-With the above code, we're telling Spring Security to not associate any Security Filters for the above API endpoints.
+With the above code, we're telling Spring Security to not associate any Security Filters for the above API endpoints. 
 
-We also have the following configuration in the same `WebSecurityConfig` class:
+We also have the following configuration in the same `WebSecurityConfig` class: 
 
 ```java
 @Override
@@ -207,9 +209,9 @@ protected void configure(HttpSecurity httpSecurity) throws Exception {
     }
 ```
 
-The `.authorizeRequests().anyRequest().authenticated()` line indicates that for *any* request (other than the ones that are mentioned to be ignored earlier), the user needs to be authenticated. That means, we need to have Security Filters in place.
+The `.authorizeRequests().anyRequest().authenticated()` line indicates that for *any* request (other than the ones that are mentioned to be ignored earlier), the user needs to be authenticated. That means, we need to have Security Filters in place. 
 
-And there are some specific set of Security Filters that will be added by default and can't be configured and some others are configurable. It's also important to note that the order in which the Security Filters are placed also matters.
+And there are some specific set of Security Filters that will be added by default and can't be configured and some others are configurable. It's also important to note that the order in which the Security Filters are placed also matters. 
 
 And there is a standard order of Security Filters pre-defined. You can find the ordering here: https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-security-filters
 
@@ -273,4 +275,3 @@ https://docs.spring.io/spring-security/site/docs/3.0.x/reference/technical-overv
 https://github.com/spring-projects/spring-security-samples/tree/main/servlet/spring-boot/java/jwt/login
 
 https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html
-
