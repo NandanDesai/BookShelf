@@ -1,11 +1,11 @@
 # BookShelf Base
 
-This project is like a base (a foundation) for building BookShelf Security and BookShelf Cloud projects. But this project can also be treated as an independent project in itself! You can download the JAR file and test some of the basic functionality that the 'BookShelf' project is intended to demonstrate.
+This project is like a base (a foundation) for building BookShelf Security project. But this project can also be treated as an independent project in itself! You can download the JAR file and test some of the basic functionality that the 'BookShelf' project is intended to demonstrate.
 
 This project has 2 sub-projects:
 
- 1. bookshelf-base-server
- 2. ui
+1. bookshelf-base-server
+2. ui
 
 ## bookshelf-base-server
 
